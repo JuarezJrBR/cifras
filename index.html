@@ -156,16 +156,36 @@ textarea.code{font-family:var(--mono);line-height:1.4;min-height:52vh;white-spac
 .stepper .val{min-width:96px;text-align:center;font-weight:750}
 
 /* ---------- tela da cifra ---------- */
-.tools{max-width:980px;margin:0 auto;padding:0 7px 8px;display:flex;gap:5px;align-items:center;overflow-x:auto;scrollbar-width:none}
+.tools{max-width:980px;margin:0 auto;padding:0 6px 9px;display:flex;gap:5px;align-items:center;overflow-x:auto;scrollbar-width:none}
 .tools::-webkit-scrollbar{display:none}
-.tb{height:38px;min-width:38px;padding:0 8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-weight:750;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;flex:none}
+.tb{height:38px;min-width:40px;padding:0 10px;border-radius:11px;border:0;background:var(--surface2);font-weight:750;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;flex:none;color:var(--text)}
+.tb:active{filter:brightness(.92)}
 .tb small{font-size:11.5px;font-weight:650;color:var(--muted)}
-.tb.key b{font-family:var(--mono);color:var(--chord);font-size:16px}
+.tb.key{background:color-mix(in srgb,var(--chord) 16%,transparent);color:var(--chord);padding:0 11px}
+.tb.key small{color:inherit;opacity:.8}
+.tb.key b{color:var(--chord);font-size:17px;font-weight:800}
 .tb.key .kc{display:flex;flex-direction:column;align-items:flex-start;line-height:1.05}
 .tb.key .kc small{font-size:10px}
-.tb.on{background:var(--text);color:var(--bg);border-color:transparent}
+.tb.on{background:var(--text);color:var(--bg)}
 .tb .i{width:18px;height:18px}
-.tb.grow{flex:1 0 auto}
+.grp{display:flex;flex:none;background:var(--surface2);border-radius:11px}
+.grp .tb{background:transparent;min-width:38px;padding:0 8px}
+.grp .tb + .tb{border-left:1px solid var(--line);border-radius:0 11px 11px 0}
+.grp .tb:first-child{border-radius:11px 0 0 11px}
+.a-sm{font-size:12px;font-weight:800}
+.a-lg{font-size:18px;font-weight:800}
+#bar.song .bar-title{opacity:0;transition:opacity .18s}
+#bar.song.scrolled .bar-title{opacity:1}
+
+/* cabeçalho da música */
+.song-hero{font-family:var(--sans);padding:8px 0 16px;margin:0 0 18px;border-bottom:1px solid var(--line)}
+.song-hero h2{font-size:27px;line-height:1.15;font-weight:800;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.song-hero p{margin:4px 0 0;color:var(--muted);font-size:15.5px;font-weight:500}
+.song-hero .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.hchip{font:600 13.5px/1 var(--sans);padding:8px 11px;border-radius:999px;background:var(--surface2);color:var(--muted);border:0;display:inline-flex;align-items:center;gap:4px}
+.hchip b{color:var(--chord);font-weight:800}
+.hchip.key{background:color-mix(in srgb,var(--chord) 16%,transparent);color:var(--chord)}
+button.hchip{cursor:pointer}
 
 .cifra{--fs:17px;font-family:var(--mono);font-size:var(--fs);line-height:1.35;padding:4px 0 45vh}
 .cifra.lyr-only{font-family:var(--sans);line-height:1.5}
@@ -182,8 +202,22 @@ textarea.code{font-family:var(--mono);line-height:1.4;min-height:52vh;white-spac
 .cifra .cd{display:block;min-height:1.35em;padding-right:.5ch;white-space:pre;color:var(--chord);font-weight:750}
 .cifra .kt{display:block;white-space:pre;min-height:1.35em}
 .cifra .tabblk{white-space:pre;overflow-x:auto;font-size:.82em;margin:0 0 .6em;padding:8px 10px;background:var(--surface2);border-radius:10px}
-.capo-note{font-family:var(--sans);font-size:14px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:0 0 14px;display:inline-block}
-.capo-note b{color:var(--chord)}
+/* estilo moderno: letra em fonte comum, acordes por cima, partes como etiquetas, refrão destacado */
+.cifra.modern{font-family:var(--sans);line-height:1.38}
+.cifra.modern .blk{margin:0 0 1.5em}
+.cifra.modern .pr{margin-bottom:.5em}
+.cifra.modern .cd{font-size:.86em;font-weight:800;letter-spacing:.01em;min-height:1.35em;padding-right:.45em}
+.cifra.modern .kt{min-height:1.38em}
+.cifra.modern .lyr{margin-bottom:.35em}
+.cifra .sec .tag,.cifra .co.m .tag{display:inline-block;font:800 max(11px,.66em)/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--sec);background:color-mix(in srgb,var(--sec) 15%,transparent);padding:.5em .75em;border-radius:999px}
+.cifra.modern .sec{margin-bottom:.75em}
+.cifra .co.m{display:flex;flex-wrap:wrap;align-items:center;gap:.3em 1.1em;margin-bottom:.4em}
+.cifra .co.m .c{font-size:.95em;font-weight:800}
+.cifra .co.m .f{color:var(--muted)}
+.cifra.modern .chorus{background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:3px solid var(--accent);border-radius:4px 14px 14px 4px;padding:.8em .9em .35em;margin-left:-6px}
+.cifra.modern .chorus .sec .tag{color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.cifra.modern .tabblk{font-family:var(--mono);font-size:.78em;line-height:1.35;border:1px solid var(--line)}
+.cifra.modern.lyr-only .lyr{margin-bottom:.15em}
 @media (min-width:900px){.cifra.cols{columns:2;column-gap:56px}}
 
 .setnav{position:fixed;bottom:0;left:0;right:0;z-index:25;display:flex;align-items:center;gap:10px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line)}
@@ -248,7 +282,7 @@ body.hasnav #scrollctl{bottom:calc(82px + env(safe-area-inset-bottom))}
 
 <script>
 'use strict';
-const VERSION = '1.1.0';
+const VERSION = '1.2.0';
 
 /* =========================================================
    Utilidades
@@ -430,7 +464,12 @@ function layoutChordLine(toks, ctx, html) {
   return out;
 }
 // Acorde + letra: quebra em "pedaços" que podem descer de linha sem perder o acorde em cima da sílaba certa
-function pairHtml(toks, lyric, ctx) {
+function pairHtml(toks, lyric, ctx, modern) {
+  const room = n => modern ? Math.ceil(n * 1.4) + 1 : n + 1; // na fonte moderna as letras são mais estreitas que os acordes
+  if (modern) { // tira o recuo que acorde e letra têm em comum (os sites usam espaços para alinhar)
+    const cut = Math.min(toks[0].col, (/^ */.exec(lyric) || [''])[0].length);
+    if (cut) { lyric = lyric.slice(cut); toks = toks.map(t => ({...t, col:t.col - cut})); }
+  }
   const pieces = [];
   if (toks[0].col > 0) pieces.push({c: null, t: lyric.slice(0, toks[0].col)});
   toks.forEach((tk, i) => {
@@ -443,7 +482,7 @@ function pairHtml(toks, lyric, ctx) {
     let j = 0;
     if (p.c) { // junta palavras até caber o acorde, para não abrir buraco na letra
       let first = parts[j++];
-      while (j < parts.length && first.length < p.n + 1) first += parts[j++];
+      while (j < parts.length && first.length < room(p.n)) first += parts[j++];
       chunks.push({c: p.c, t: first});
     }
     for (; j < parts.length; j++) chunks.push({c: null, t: parts[j]});
@@ -457,31 +496,40 @@ function pairHtml(toks, lyric, ctx) {
   if (open) h += '</span>';
   return h + '</div>';
 }
-function renderCifra(text, ctx, lyricsOnly) {
+const secName = s => String(s).trim().replace(/^\[\s*|\s*\]$/g, '').replace(/:$/, '');
+const isChorus = s => /refr|coro|chorus/i.test(s);
+// modern: letra em fonte normal, partes como etiquetas e refrão destacado. Clássico: igual aos sites (monoespaçado).
+function renderCifra(text, ctx, lyricsOnly, modern) {
   const lines = text.split('\n'), out = [];
-  let blk = [], tab = [];
+  let blk = [], tab = [], chorus = false;
+  const secHtml = s => modern ? '<div class="ln sec"><span class="tag">' + esc(secName(s)) + '</span></div>' : '<div class="ln sec">' + esc(s.trim()) + '</div>';
+  const openSec = s => { flushBlk(); chorus = modern && isChorus(s); blk.push(secHtml(s)); };
   const flushTab = () => { if (tab.length) { blk.push('<div class="tabblk">' + tab.map(esc).join('\n') + '</div>'); tab = []; } };
-  const flushBlk = () => { flushTab(); if (blk.length) { out.push('<div class="blk">' + blk.join('') + '</div>'); blk = []; } };
+  const flushBlk = () => { flushTab(); if (blk.length) { out.push('<div class="blk' + (chorus ? ' chorus' : '') + '">' + blk.join('') + '</div>'); blk = []; } };
   const onlySec = () => blk.length === 1 && blk[0].startsWith('<div class="ln sec"');
   for (let i = 0; i < lines.length; i++) {
     const l = lines[i], kind = classify(l);
     if (kind !== 'tab') flushTab();
     if (kind === 'blank') { if (!onlySec()) flushBlk(); continue; }
     if (kind === 'tab') { if (!lyricsOnly) tab.push(l); continue; }
-    if (kind === 'sec') { flushBlk(); blk.push('<div class="ln sec">' + esc(l.trim()) + '</div>'); continue; }
+    if (kind === 'sec') { openSec(l); continue; }
     if (kind === 'chord') {
       const toks = lineTokens(l);
-      if (lyricsOnly) {
-        const labels = toks.filter(t => t.kind === 'label');
-        if (labels.length) { flushBlk(); blk.push('<div class="ln sec">' + esc(labels.map(t => t.text).join(' ')) + '</div>'); }
-        continue;
-      }
+      const labels = toks.filter(t => t.kind === 'label');
+      if (lyricsOnly) { if (labels.length) openSec(labels.map(t => t.text).join(' ')); continue; }
       const next = lines[i + 1];
-      if (next !== undefined && classify(next) === 'lyric') { blk.push(pairHtml(toks, next, ctx)); i++; }
+      if (next !== undefined && classify(next) === 'lyric') { blk.push(pairHtml(toks, next, ctx, modern)); i++; }
+      else if (modern) {
+        // progressão (intro, solo, final): etiqueta + acordes espaçados
+        if (labels.length && toks[0].kind === 'label') openSec(labels[0].text);
+        const rest = toks.filter((t, k) => !(k === 0 && t.kind === 'label'));
+        blk.push('<div class="ln co m">' + rest.map(t => t.kind === 'chord' ? tokHtml(t, ctx)
+          : t.kind === 'label' ? '<span class="tag">' + esc(secName(t.text)) + '</span>' : '<span class="f">' + esc(t.text) + '</span>').join('') + '</div>');
+      }
       else blk.push('<div class="ln co">' + layoutChordLine(toks, ctx, true) + '</div>');
       continue;
     }
-    blk.push('<div class="ln lyr">' + esc(lyricsOnly ? l.trim() : l) + '</div>');
+    blk.push('<div class="ln lyr">' + esc(lyricsOnly || modern ? l.trim() : l) + '</div>');
   }
   flushBlk();
   return out.join('');
@@ -513,7 +561,7 @@ function normalizeText(t) {
 const STORE_KEY = 'cifras:data:v1';
 const INSTRUMENTS = ['Violão','Guitarra','Teclado','Baixo','Ukulele','Cavaquinho','Voz','Bateria','Outro'];
 const SPEEDS = [6, 9, 13, 18, 24, 31, 40, 52, 66, 85];
-const DEFAULT_SETTINGS = {theme:'auto', fontSize:17, accidentals:'auto', columns:false, lyricsOnly:false, speed:3, wake:true, hintDismissed:false, lastInstrument:'Violão'};
+const DEFAULT_SETTINGS = {theme:'auto', style:'modern', fontSize:17, accidentals:'auto', columns:false, lyricsOnly:false, speed:3, wake:true, hintDismissed:false, lastInstrument:'Violão'};
 const DEMO = `[Intro] G  D/F#  Em7  C9
 
 [Primeira Parte]
@@ -773,6 +821,7 @@ function route() {
   prevHash = curHash; curHash = h;
   stopScroll(); keepAwake(false); closeSheet(true); S = null; EDIT = null;
   document.body.classList.remove('full', 'hasnav');
+  $('#bar').classList.remove('song', 'scrolled');
   let m;
   if ((m = /^#\/set\/([\w-]+)$/.exec(h))) return viewSet(m[1]);
   if ((m = /^#\/play\/([\w-]+)\/(\d+)$/.exec(h))) return viewSong({setId:m[1], idx:+m[2]});
@@ -939,6 +988,7 @@ function viewSong(c) {
   } else { song = songById(c.songId); if (!song) return notFound(); }
   S = {song, item, set, idx:c.idx};
   document.body.classList.add('full'); if (set) document.body.classList.add('hasnav');
+  $('#bar').classList.add('song');
   header({back:set ? '#/set/' + set.id : '#/songs', title:song.title, sub:[song.artist, song.instrument].filter(Boolean).join(' · '),
     right:`<a class="ib" href="#/edit/${song.id}" aria-label="Editar cifra">${ic('edit')}</a><button class="ib" data-act="songMenu" aria-label="Mais opções">${ic('more')}</button>`,
     extra:'<div class="tools" id="tools"></div>'});
@@ -959,13 +1009,25 @@ function drawTools() {
   const t = target(), tr = t.transpose || 0, capo = t.capo || 0, ctx = viewCtx(S.song, tr, capo);
   const keyLbl = ctx.target ? ctx.target.name : (tr ? (tr > 0 ? '+' : '') + tr : '—');
   $('#tools').innerHTML = `<button class="tb key" data-act="keySheet" aria-label="Mudar tom e capo"><small>Tom</small>${capo ? `<span class="kc"><b>${esc(keyLbl)}</b><small>capo ${capo}</small></span>` : `<b>${esc(keyLbl)}</b>`}</button>
-    <button class="tb" data-act="tr" data-d="-1" aria-label="Meio tom abaixo">−½</button>
-    <button class="tb" data-act="tr" data-d="1" aria-label="Meio tom acima">+½</button>
-    <button class="tb" data-act="fs" data-d="-1" aria-label="Diminuir letra"><small>A</small>−</button>
-    <button class="tb" data-act="fs" data-d="1" aria-label="Aumentar letra">A+</button>
+    <div class="grp"><button class="tb" data-act="tr" data-d="-1" aria-label="Meio tom abaixo">−½</button><button class="tb" data-act="tr" data-d="1" aria-label="Meio tom acima">+½</button></div>
+    <div class="grp"><button class="tb" data-act="fs" data-d="-1" aria-label="Diminuir letra"><span class="a-sm">A</span></button><button class="tb" data-act="fs" data-d="1" aria-label="Aumentar letra"><span class="a-lg">A</span></button></div>
     <button class="tb${scrolling ? ' on' : ''}" data-act="scroll" aria-label="Rolagem automática">${ic(scrolling ? 'pause' : 'play')}</button>
     <button class="tb${db.settings.lyricsOnly ? ' on' : ''}" data-act="lyrics" aria-label="Mostrar só a letra">Letra</button>`;
 }
+const modernStyle = () => db.settings.style !== 'classic';
+function heroHtml(song, ctx, capo) {
+  const chips = [], ok = parseKey(song.key);
+  if (ok && ctx.target && !capo && ctx.target.pc !== ok.pc) chips.push(`<button class="hchip" data-act="keySheet">Original em <b>${esc(keyName(ok.pc, ok.minor))}</b></button>`);
+  if (capo && ctx.shapes) chips.push(`<button class="hchip" data-act="keySheet">Capo ${capo}ª casa · formas de <b>${esc(ctx.shapes.name)}</b></button>`);
+  if (song.instrument) chips.push(`<span class="hchip">${esc(song.instrument)}</span>`);
+  return `<header class="song-hero"><h2>${esc(song.title)}</h2>${song.artist ? `<p>${esc(song.artist)}</p>` : ''}${chips.length && !db.settings.lyricsOnly ? `<div class="chips">${chips.join('')}</div>` : ''}</header>`;
+}
+// mostra o nome da música na barra de cima só depois que o cabeçalho sai da tela
+function updBarTitle() {
+  const h2 = S && $('.song-hero h2'), bar = $('#bar');
+  bar.classList.toggle('scrolled', !h2 || h2.getBoundingClientRect().bottom < bar.getBoundingClientRect().bottom);
+}
+addEventListener('scroll', () => { if (S) updBarTitle(); }, {passive:true});
 function drawSong() {
   if (!S) return;
   drawTools();
@@ -974,11 +1036,12 @@ function drawSong() {
   el.style.setProperty('--fs', db.settings.fontSize + 'px');
   el.classList.toggle('cols', !!db.settings.columns);
   el.classList.toggle('lyr-only', !!db.settings.lyricsOnly);
-  let h = '';
-  if (capo && ctx.shapes && !db.settings.lyricsOnly) h += `<div class="capo-note">Capotraste na ${capo}ª casa · formas de <b>${esc(ctx.shapes.name)}</b> · soa em <b>${esc(ctx.target.name)}</b></div>`;
-  h += S.song.text.trim() ? renderCifra(S.song.text, ctx, db.settings.lyricsOnly)
+  el.classList.toggle('modern', modernStyle());
+  let h = heroHtml(S.song, ctx, capo);
+  h += S.song.text.trim() ? `<div class="sheet-body">${renderCifra(S.song.text, ctx, db.settings.lyricsOnly, modernStyle())}</div>`
     : `<div class="empty">${ic('music')}<h3>Cifra vazia</h3><p>Toque no lápis lá em cima para colar a cifra.</p><a class="btn primary" href="#/edit/${S.song.id}">${ic('edit')} Colar cifra</a></div>`;
   el.innerHTML = h;
+  updBarTitle();
 }
 function saveTarget() { const now = Date.now(); if (S.item) S.set.updatedAt = now; else S.song.updatedAt = now; persist(); }
 function setTr(v) { target().transpose = normTr(v); saveTarget(); drawSong(); }
@@ -1151,7 +1214,8 @@ let EDIT = null;
 function drawPreview() {
   const txt = normalizeText($('#e-text').value);
   const fake = {key:$('#e-key').value || detectKey(cleanChars($('#e-text').value)), text:txt};
-  $('#e-prev').innerHTML = txt ? renderCifra(txt, viewCtx(fake, 0, 0), false) : '<p class="muted">Nada para mostrar ainda.</p>';
+  $('#e-prev').classList.toggle('modern', modernStyle());
+  $('#e-prev').innerHTML = txt ? renderCifra(txt, viewCtx(fake, 0, 0), false, modernStyle()) : '<p class="muted">Nada para mostrar ainda.</p>';
   $('#e-prev').style.setProperty('--fs', Math.min(db.settings.fontSize, 17) + 'px');
 }
 function saveSong() {
@@ -1211,6 +1275,8 @@ function viewSettings() {
     <div class="h2">Aparência</div>
     <div class="card">
       <div class="field" style="margin-bottom:12px"><label>Tema</label>${seg('theme', st.theme, [['auto', 'Automático'], ['light', 'Claro'], ['dark', 'Escuro']])}</div>
+      <div class="field" style="margin-bottom:4px"><label>Estilo da cifra</label>${seg('style', st.style === 'classic' ? 'classic' : 'modern', [['modern', 'Moderno'], ['classic', 'Clássico']])}</div>
+      <p class="help" style="margin:0 2px 10px">Moderno: letra mais fácil de ler, partes da música em etiquetas e refrão destacado. Clássico: letra de máquina de escrever, igual aos sites de cifra.</p>
       <div class="set-row"><div><b>Tamanho da letra</b><div class="small muted">Também dá para mudar na tela da cifra.</div></div>
         <div class="stepper"><button class="ib bordered" data-act="setFs" data-d="-1" aria-label="Menor">${ic('minus')}</button><b style="min-width:30px;text-align:center">${st.fontSize}</b><button class="ib bordered" data-act="setFs" data-d="1" aria-label="Maior">${ic('plus')}</button></div></div>
     </div>
@@ -1286,6 +1352,7 @@ const ACT = {
   delSong:async () => { const {song, ret} = EDIT; if (await ask(`Excluir “${song.title}”? Ela também sai dos repertórios. Não dá para desfazer.`, 'Excluir', true)) { deleteSong(song.id); EDIT = null; toast('Música excluída'); location.replace(/^#\/(song|play)\//.test(ret) ? '#/songs' : ret); } },
   theme:el => { db.settings.theme = el.dataset.v; persist(); applyTheme(); viewSettings(); },
   accid:el => { db.settings.accidentals = el.dataset.v; persist(); viewSettings(); },
+  style:el => { db.settings.style = el.dataset.v; persist(); viewSettings(); },
   setFs:el => { db.settings.fontSize = clampInt(db.settings.fontSize + +el.dataset.d, 11, 40); persist(); viewSettings(); },
   bmClick:() => toast('Arraste este botão até a barra de favoritos (não precisa clicar).'),
   copyBm:async () => {

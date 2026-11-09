@@ -1,6 +1,6 @@
 // Service worker: guarda o app no aparelho para abrir sem internet.
 // Ao publicar uma versão nova, mude o número abaixo.
-const CACHE = 'cifras-v1.1.0';
+const CACHE = 'cifras-v1.2.0';
 const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
