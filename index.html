@@ -1,0 +1,1278 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Minhas Cifras</title>
+<meta name="description" content="Suas cifras e repertórios, mesmo sem internet.">
+<meta name="theme-color" content="#f6f5f1">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cifras">
+<style>
+:root{
+  --bg:#f6f5f1; --surface:#ffffff; --surface2:#eeece6; --text:#1d1c1a; --muted:#6e6a63; --line:#e3e0d8;
+  --accent:#c2410c; --accent-ink:#ffffff; --chord:#c2410c; --sec:#4f46e5; --danger:#b42318;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,"Roboto Mono","Cascadia Mono",Consolas,"Liberation Mono",monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --r:14px;
+  color-scheme:light;
+}
+:root[data-theme=dark]{
+  --bg:#111113; --surface:#1a1a1d; --surface2:#26262b; --text:#ecebe7; --muted:#9b978f; --line:#2e2e34;
+  --accent:#fb923c; --accent-ink:#1a1006; --chord:#fdba74; --sec:#a5b4fc; --danger:#f87171;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#111113; --surface:#1a1a1d; --surface2:#26262b; --text:#ecebe7; --muted:#9b978f; --line:#2e2e34;
+    --accent:#fb923c; --accent-ink:#1a1006; --chord:#fdba74; --sec:#a5b4fc; --danger:#f87171;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 var(--sans);-webkit-tap-highlight-color:transparent;
+  padding-bottom:calc(76px + env(safe-area-inset-bottom));min-height:100vh;overflow-x:hidden}
+body.full{padding-bottom:env(safe-area-inset-bottom)}
+body.noscroll{overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+a{color:inherit}
+.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i.f{fill:currentColor;stroke:none}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.center{text-align:center}
+.mt{margin-top:14px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row.end{justify-content:flex-end}
+.grow{flex:1}
+
+/* ---------- barra superior ---------- */
+#bar{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+@supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
+  #bar{background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:saturate(1.5) blur(14px);-webkit-backdrop-filter:saturate(1.5) blur(14px)}
+}
+.bar-in{display:flex;align-items:center;gap:2px;height:54px;padding:0 6px;max-width:980px;margin:0 auto}
+.bar-title{flex:1;min-width:0;padding:0 8px}
+.bar-title h1{font-size:18px;line-height:1.2;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:750;letter-spacing:-.01em}
+.bar-title small{display:block;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{width:44px;height:44px;display:inline-grid;place-items:center;border:0;background:transparent;border-radius:12px;color:var(--text);text-decoration:none;flex:none}
+.ib:active{background:var(--surface2)}
+.ib.sm{width:38px;height:38px}
+.ib.danger{color:var(--danger)}
+.ib.bordered{border:1px solid var(--line);background:var(--surface)}
+@media (hover:hover){.ib:not(:disabled):hover{background:var(--surface2)}}
+#net{display:none;text-align:center;font-size:13px;font-weight:600;padding:5px 12px;background:var(--surface2);color:var(--muted)}
+body.offline #net{display:block}
+
+/* ---------- abas ---------- */
+#tabs{position:fixed;bottom:0;left:0;right:0;z-index:30;display:flex;justify-content:center;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+#tabs a{flex:1;max-width:180px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 0 7px;font-size:12px;color:var(--muted);text-decoration:none;font-weight:650}
+#tabs a.on{color:var(--accent)}
+body.full #tabs{display:none}
+
+main{max-width:980px;margin:0 auto;padding:14px 16px 28px}
+
+/* ---------- listas ---------- */
+.h2{font-size:12.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:22px 4px 8px;font-weight:750}
+.h2:first-child{margin-top:4px}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;align-items:center;gap:12px;padding:11px 12px 11px 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);text-decoration:none;color:inherit;min-height:62px;width:100%;text-align:left}
+a.item:active,button.item:active{background:var(--surface2)}
+.item .meta{flex:1;min-width:0}
+.item .t{font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .s{font-size:13.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .s em{font-style:normal;color:var(--accent);font-weight:700}
+.item > .i{color:var(--muted)}
+.item.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.num{width:28px;height:28px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;font-size:13px;font-weight:750;color:var(--muted);flex:none}
+.date{width:46px;flex:none;text-align:center;line-height:1.05;display:flex;flex-direction:column;align-items:center}
+.date span{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:700;letter-spacing:.04em}
+.date b{font-size:22px;font-weight:800}
+.badge{font:750 13px/1 var(--mono);padding:7px 8px;border-radius:8px;background:color-mix(in srgb,var(--chord) 14%,transparent);color:var(--chord);white-space:nowrap;flex:none}
+.ord{display:flex;gap:2px;flex:none}
+
+/* ---------- botões ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:650;text-decoration:none;color:var(--text);white-space:nowrap}
+.btn:active{filter:brightness(.95)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.danger{color:var(--danger)}
+.btn.block{width:100%}
+.btn.sm{min-height:38px;padding:0 14px;font-size:15px}
+.btn .i{width:20px;height:20px}
+
+/* ---------- vazio / dicas ---------- */
+.empty{text-align:center;padding:36px 16px 20px;color:var(--muted)}
+.empty .i{width:44px;height:44px;stroke-width:1.5;color:var(--accent);opacity:.8}
+.empty h3{color:var(--text);margin:10px 0 4px;font-size:18px}
+.empty p{margin:0 auto 16px;max-width:360px}
+.hint{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:6px}
+.hint b{display:block;margin-bottom:4px}
+.hint ol{margin:6px 0 10px;padding-left:20px}
+.hint li{margin:3px 0}
+
+/* ---------- busca e filtros ---------- */
+.search{position:relative;margin-bottom:10px}
+.search .i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);width:20px;height:20px}
+.search input{padding-left:40px!important}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 13px;font-size:14px;font-weight:650;white-space:nowrap}
+.chip.on{background:var(--text);color:var(--bg);border-color:transparent}
+
+/* ---------- formulários ---------- */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;min-width:0}
+.field label{font-size:13px;font-weight:750;color:var(--muted)}
+input[type=text],input[type=search],input[type=date],select,textarea{font-size:16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 12px;width:100%;min-height:46px;outline:none;-webkit-appearance:none;appearance:none}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 17px) 50%,calc(100% - 12px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:28px}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+textarea.code{font-family:var(--mono);line-height:1.4;min-height:52vh;white-space:pre;overflow-wrap:normal;overflow-x:auto;resize:vertical}
+.grid3{display:grid;grid-template-columns:1.25fr 1fr .85fr;gap:10px}
+.help{font-size:13.5px;color:var(--muted);margin:2px 2px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.seg{display:flex;background:var(--surface2);border-radius:12px;padding:3px;gap:2px}
+.seg button{flex:1;border:0;background:transparent;padding:9px 4px;border-radius:9px;font-weight:650;font-size:14px}
+.seg button.on{background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.set-row:last-child{border-bottom:0}
+.set-row > div:first-child{min-width:0}
+.switch{position:relative;width:52px;height:32px;flex:none}
+.switch input{opacity:0;width:0;height:0;position:absolute}
+.switch span{position:absolute;inset:0;background:var(--line);border-radius:99px;transition:.2s}
+.switch span::after{content:"";position:absolute;width:26px;height:26px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:.2s}
+.switch input:checked + span{background:var(--accent)}
+.switch input:checked + span::after{transform:translateX(20px)}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper .val{min-width:96px;text-align:center;font-weight:750}
+
+/* ---------- tela da cifra ---------- */
+.tools{max-width:980px;margin:0 auto;padding:0 7px 8px;display:flex;gap:5px;align-items:center;overflow-x:auto;scrollbar-width:none}
+.tools::-webkit-scrollbar{display:none}
+.tb{height:38px;min-width:38px;padding:0 8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-weight:750;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;flex:none}
+.tb small{font-size:11.5px;font-weight:650;color:var(--muted)}
+.tb.key b{font-family:var(--mono);color:var(--chord);font-size:16px}
+.tb.key .kc{display:flex;flex-direction:column;align-items:flex-start;line-height:1.05}
+.tb.key .kc small{font-size:10px}
+.tb.on{background:var(--text);color:var(--bg);border-color:transparent}
+.tb .i{width:18px;height:18px}
+.tb.grow{flex:1 0 auto}
+
+.cifra{--fs:17px;font-family:var(--mono);font-size:var(--fs);line-height:1.35;padding:4px 0 45vh}
+.cifra.lyr-only{font-family:var(--sans);line-height:1.5}
+.cifra .blk{margin:0 0 1.15em;break-inside:avoid}
+.cifra .ln{min-height:1.35em}
+.cifra .lyr{white-space:pre-wrap}
+.cifra .co{white-space:pre-wrap}
+.cifra .c{color:var(--chord);font-weight:750}
+.cifra .lbl,.cifra .sec{color:var(--sec);font-weight:750}
+.cifra .sec{margin-bottom:.15em}
+.cifra .pr{margin-bottom:.1em}
+.cifra .w{display:inline-block;white-space:nowrap;vertical-align:bottom}
+.cifra .k{display:inline-block;vertical-align:bottom}
+.cifra .cd{display:block;min-height:1.35em;padding-right:.5ch;white-space:pre;color:var(--chord);font-weight:750}
+.cifra .kt{display:block;white-space:pre;min-height:1.35em}
+.cifra .tabblk{white-space:pre;overflow-x:auto;font-size:.82em;margin:0 0 .6em;padding:8px 10px;background:var(--surface2);border-radius:10px}
+.capo-note{font-family:var(--sans);font-size:14px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:0 0 14px;display:inline-block}
+.capo-note b{color:var(--chord)}
+@media (min-width:900px){.cifra.cols{columns:2;column-gap:56px}}
+
+.setnav{position:fixed;bottom:0;left:0;right:0;z-index:25;display:flex;align-items:center;gap:10px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line)}
+.setnav .btn{min-width:56px;padding:0 12px}
+.setnav .mid{flex:1;text-align:center;min-width:0;font-size:12.5px;color:var(--muted);line-height:1.25}
+.setnav .mid b{display:block;color:var(--text);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+#scrollctl{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:26;display:flex;align-items:center;gap:2px;background:var(--text);color:var(--bg);border-radius:999px;padding:4px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+body.hasnav #scrollctl{bottom:calc(82px + env(safe-area-inset-bottom))}
+#scrollctl button{width:42px;height:42px;border:0;background:transparent;color:inherit;border-radius:50%;display:grid;place-items:center}
+#scrollctl span{min-width:30px;text-align:center;font-weight:800;font-size:15px}
+
+/* ---------- folhas (modais) ---------- */
+#sheet-root{position:fixed;inset:0;z-index:50;display:none}
+#sheet-root.open{display:block}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.45);animation:fade .15s ease-out}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:90vh;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;padding:6px 16px calc(18px + env(safe-area-inset-bottom));animation:up .22s ease-out;overscroll-behavior:contain}
+.sheet::before{content:"";display:block;width:40px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 10px}
+.sheet h3{margin:4px 0 14px;font-size:19px}
+.sheet .h3{font-weight:750;margin:20px 0 8px}
+.sheet p{margin:8px 0}
+@media (min-width:700px){
+  .sheet{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);width:min(520px,92vw);border-radius:20px;padding:18px 22px 22px;animation:fade .15s ease-out}
+  .sheet::before{display:none}
+}
+@keyframes fade{from{opacity:0}}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+.mi{display:flex;align-items:center;gap:14px;width:100%;padding:14px 6px;border:0;background:transparent;text-align:left;font-weight:600;border-radius:10px}
+.mi:active{background:var(--surface2)}
+.mi.danger{color:var(--danger)}
+.mi .i{color:var(--muted)}
+.mi.danger .i{color:var(--danger)}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.keys button{height:52px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);font:750 17px var(--mono);position:relative;padding:0}
+.keys button.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.keys button.orig::after{content:"original";position:absolute;bottom:3px;left:0;right:0;font:650 9.5px var(--sans);opacity:.75}
+.pick{max-height:52vh;overflow:auto;margin:0 -4px;padding:0 4px}
+.pickrow .chk{width:26px;height:26px;border-radius:8px;border:2px solid var(--line);display:grid;place-items:center;flex:none;color:transparent}
+.pickrow.on .chk{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pickrow .chk .i{width:16px;height:16px;stroke-width:3}
+.pickrow .in{font-size:12px;color:var(--muted);font-weight:650}
+.sheet-foot{position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom));background:var(--surface);padding:12px 0 4px;margin-top:8px}
+
+#toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translate(-50%,16px);opacity:0;background:var(--text);color:var(--bg);padding:11px 16px;border-radius:12px;font-size:14.5px;font-weight:650;transition:.2s;z-index:70;pointer-events:none;max-width:min(92vw,460px);text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<header id="bar"></header>
+<main id="app"></main>
+<nav id="tabs">
+  <a href="#/" data-tab="home"><svg class="i" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>Repertórios</a>
+  <a href="#/songs" data-tab="songs"><svg class="i" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Músicas</a>
+  <a href="#/settings" data-tab="settings"><svg class="i" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>Ajustes</a>
+</nav>
+<div id="scrollctl" hidden></div>
+<div id="sheet-root"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="imp" accept=".json,application/json" hidden>
+<noscript><p style="padding:20px">Ative o JavaScript para usar o app de cifras.</p></noscript>
+
+<script>
+'use strict';
+const VERSION = '1.0.0';
+
+/* =========================================================
+   Utilidades
+   ========================================================= */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const pad2 = n => String(n).padStart(2, '0');
+const clampInt = (v, a, b) => { v = Math.round(+v || 0); return Math.min(b, Math.max(a, v)); };
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const plural = (n, s, p) => n + ' ' + (n === 1 ? s : p);
+function todayStr() { const d = new Date(); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+function parseDate(s) { const [y, m, d] = String(s || todayStr()).split('-').map(Number); return new Date(y, (m || 1) - 1, d || 1); }
+function dayDiff(s) { const n = new Date(); return Math.round((parseDate(s) - new Date(n.getFullYear(), n.getMonth(), n.getDate())) / 864e5); }
+function fmtDate(s, long) {
+  return parseDate(s).toLocaleDateString('pt-BR', long ? {weekday:'long', day:'numeric', month:'long'} : {weekday:'short', day:'numeric', month:'short'});
+}
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+
+const ICONS = {
+  back:'<path d="M15 18l-6-6 6-6"/>', next:'<path d="M9 18l6-6-6-6"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>', minus:'<path d="M5 12h14"/>',
+  more:'<circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/>',
+  edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  play:'<path d="M7 4.5v15l12.5-7.5z"/>', pause:'<path d="M8 5v14M16 5v14"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',
+  up:'<path d="m18 15-6-6-6 6"/>', down:'<path d="m6 9 6 6 6-6"/>', x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  share:'<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4M12 2v13"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>', trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>',
+  copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  download:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>', upload:'<path d="M12 21V9M7 14l5-5 5 5M5 3h14"/>',
+  sort:'<path d="M7 4v16M3 16l4 4 4-4M17 20V4M13 8l4-4 4 4"/>',
+  cols:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+  text:'<path d="M4 6h16M4 12h16M4 18h10"/>', cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  phone:'<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>',
+};
+const FILLED = {more:1, play:1};
+const ic = n => `<svg class="i${FILLED[n] ? ' f' : ''}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
+
+/* =========================================================
+   Teoria musical: acordes, tons e transposição
+   ========================================================= */
+const SHARPS = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const FLATS  = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+const MAJ = ['C','C#','D','Eb','E','F','F#','G','Ab','A','Bb','B'];
+const MIN = ['Cm','C#m','Dm','D#m','Em','Fm','F#m','Gm','G#m','Am','Bbm','Bm'];
+const LETTERS = 'CDEFGAB', LETTER_PC = [0,2,4,5,7,9,11], BASE = {C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const DEG_STEPS = [0,1,1,2,2,3,3,4,5,5,6,6]; // intervalo (semitons) -> passos de letra (b2, 2, b3, 3, 4, #4, 5, b6, 6, b7, 7)
+const mod12 = n => ((n % 12) + 12) % 12;
+const normTr = n => { n = mod12(n); return n > 6 ? n - 12 : n; };
+function pcOf(l, a) { let n = BASE[l]; if (a === '#' || a === '♯') n++; else if (a === 'b' || a === '♭') n--; return mod12(n); }
+
+const SUFFIX_OK = /^(?:maj|min|dim|aug|sus|add|no|M|m|°|º|ø|\+|-|#|b|♯|♭|\d|\(|\)|\/|,)*$/;
+function parseChord(s) {
+  let bass = null, main = s;
+  const bm = /\/([A-G])([#b♯♭]?)$/.exec(s);
+  if (bm) { bass = {l: bm[1], a: bm[2]}; main = s.slice(0, bm.index); }
+  const m = /^([A-G])([#b♯♭]?)(.*)$/.exec(main);
+  if (!m) return null;
+  const suf = m[3];
+  if (!SUFFIX_OK.test(suf) || /\/$/.test(suf)) return null;
+  return {l: m[1], a: m[2], suf, bass};
+}
+function balanced(s) { let d = 0; for (const c of s) { if (c === '(') d++; else if (c === ')') { d--; if (d < 0) return false; } } return d === 0; }
+function splitTok(tok) {
+  const pre = /^[(\[|{]*/.exec(tok)[0];
+  let core = tok.slice(pre.length), post = '';
+  while (core) {
+    if (parseChord(core) && balanced(core)) return {pre, core, post};
+    const last = core[core.length - 1];
+    if (')]|},.'.includes(last)) { post = last + post; core = core.slice(0, -1); } else return null;
+  }
+  return null;
+}
+const FILLER = /^(?:\|+|-+|–|—|\/+|\.+|~|:|%|\*|>|\(|\)|x?\d+x?|\(x?\d+x?\)|\d+ª|N\.?C\.?)$/i;
+function lineTokens(line) {
+  const out = [], re = /\[[^\]]*\]|\S+/g; let m;
+  while ((m = re.exec(line))) {
+    const t = m[0], tk = {col: m.index, text: t, kind: 'other'};
+    const sp = splitTok(t);
+    if (sp) Object.assign(tk, sp, {kind: 'chord'});
+    else if (/^\[.*\]$/.test(t) || /^[A-Za-zÀ-ÿ][\wÀ-ÿ-]*:$/.test(t)) tk.kind = 'label';
+    else if (FILLER.test(t)) tk.kind = 'filler';
+    out.push(tk);
+  }
+  return out;
+}
+const SEC_WORDS = /^(intro|introdução|introducao|refrão|refrao|coro|ponte|verso|estrofe|pré-refrão|pre-refrao|pré refrão|final|solo|interlúdio|interludio|primeira parte|segunda parte|terceira parte|quarta parte|parte \d+|bridge|chorus|verse|tag|outro)\s*\d*\s*:?$/i;
+const isTabLine = l => /^\s*([A-Ga-g][#b]?)?\s*\|/.test(l) && /-{2,}/.test(l);
+function classify(line) {
+  const t = line.trim();
+  if (!t) return 'blank';
+  if (isTabLine(line)) return 'tab';
+  if (/^\[[^\]]+\]$/.test(t) || SEC_WORDS.test(t)) return 'sec';
+  const toks = lineTokens(line);
+  let chords = 0;
+  for (const tk of toks) { if (tk.kind === 'chord') chords++; else if (tk.kind === 'other') return 'lyric'; }
+  return chords ? 'chord' : 'lyric';
+}
+
+function parseKey(k) { const m = /^([A-G])([#b♯♭]?)(m?)$/.exec(String(k || '').trim()); return m ? {pc: pcOf(m[1], m[2]), minor: !!m[3]} : null; }
+const keyName = (pc, minor) => (minor ? MIN : MAJ)[mod12(pc)];
+const keyObj = (pc, minor) => ({pc: mod12(pc), minor, name: keyName(pc, minor)});
+const prefersFlats = k => k.minor ? [0,2,5,7,10].includes(k.pc) : [3,5,8,10].includes(k.pc);
+// Escreve a nota de acordo com o tom (ex.: em D o b7 é C, em E o #4 é A#, em Bb o b3 é Db)
+function speller(key) {
+  const li = LETTERS.indexOf(key.name[0]);
+  const simple = prefersFlats(key) ? FLATS : SHARPS;
+  return pc => {
+    const iv = mod12(pc - key.pc), L = (li + DEG_STEPS[iv]) % 7;
+    const diff = ((pc - LETTER_PC[L] + 18) % 12) - 6;
+    const name = diff === 0 ? LETTERS[L] : diff === 1 ? LETTERS[L] + '#' : diff === -1 ? LETTERS[L] + 'b' : null;
+    return (!name || /^(E#|B#|Cb|Fb)$/.test(name)) ? simple[pc] : name;
+  };
+}
+function textPrefersFlats(text) {
+  const f = (text.match(/(^|\s|\/)[A-G]b/g) || []).length, s = (text.match(/(^|\s|\/)[A-G]#/g) || []).length;
+  return f > s;
+}
+function transposeChord(core, semis, spell) {
+  const p = parseChord(core); if (!p) return core;
+  let s = spell(mod12(pcOf(p.l, p.a) + semis)) + p.suf;
+  if (p.bass) s += '/' + spell(mod12(pcOf(p.bass.l, p.bass.a) + semis));
+  return s;
+}
+// "Tom: Bb (forma dos acordes no tom de A)" => cifra escrita em A, soando em Bb (com capo)
+function detectKeyInfo(text) {
+  const tm = /^\s*tom:\s*([A-G][#b]?m?)(?![\w#])(?:.*?forma dos acordes no tom de\s*([A-G][#b]?m?)(?![\w#]))?/im.exec(text);
+  if (!tm) return null;
+  const s = parseKey(tm[1]), w = parseKey(tm[2] || tm[1]);
+  if (!s || !w) return null;
+  return {written:keyName(w.pc, w.minor), sounding:keyName(s.pc, s.minor), shift:normTr(s.pc - w.pc)};
+}
+function detectKey(text) {
+  const info = detectKeyInfo(text);
+  if (info) return info.written;
+  for (const l of text.split('\n')) {
+    if (classify(l) !== 'chord') continue;
+    const c = lineTokens(l).find(t => t.kind === 'chord');
+    if (c) { const p = parseChord(c.core); return keyName(pcOf(p.l, p.a), /^(m(?!aj)|min|-)/.test(p.suf)); }
+  }
+  return '';
+}
+function detectCapo(text) { const m = /capotraste\s+na\s+(\d{1,2})/i.exec(text); return m ? clampInt(m[1], 0, 11) : 0; }
+
+// Contexto de exibição: quanto transpor e como escrever as notas
+function viewCtx(song, tr, capo) {
+  const ok = parseKey(song.key), mode = db.settings.accidentals;
+  const target = ok ? keyObj(ok.pc + tr, ok.minor) : null;
+  const shapes = ok ? keyObj(ok.pc + tr - capo, ok.minor) : null;
+  let spell;
+  if (mode === 'sharp') spell = pc => SHARPS[pc];
+  else if (mode === 'flat') spell = pc => FLATS[pc];
+  else if (shapes) spell = speller(shapes);
+  else { const fl = textPrefersFlats(song.text || ''); spell = pc => (fl ? FLATS : SHARPS)[pc]; }
+  const eff = tr - capo;
+  return {semis: (mod12(eff) === 0 && mode === 'auto') ? null : eff, spell, target, shapes};
+}
+const chordOut = (tk, ctx) => ctx.semis === null ? tk.core : transposeChord(tk.core, ctx.semis, ctx.spell);
+function tokText(tk, ctx) { return tk.kind === 'chord' ? tk.pre + chordOut(tk, ctx) + tk.post : tk.text; }
+function tokHtml(tk, ctx) {
+  if (tk.kind === 'chord') return esc(tk.pre) + '<span class="c">' + esc(chordOut(tk, ctx)) + '</span>' + esc(tk.post);
+  if (tk.kind === 'label') return '<span class="lbl">' + esc(tk.text) + '</span>';
+  return esc(tk.text);
+}
+// Remonta a linha de acordes mantendo as colunas originais (alinhamento com a letra)
+function layoutChordLine(toks, ctx, html) {
+  let out = '', pos = 0;
+  toks.forEach((tk, i) => {
+    const gap = i === 0 ? tk.col : Math.max(1, tk.col - pos);
+    out += ' '.repeat(gap); pos += gap;
+    out += html ? tokHtml(tk, ctx) : tokText(tk, ctx);
+    pos += tokText(tk, ctx).length;
+  });
+  return out;
+}
+// Acorde + letra: quebra em "pedaços" que podem descer de linha sem perder o acorde em cima da sílaba certa
+function pairHtml(toks, lyric, ctx) {
+  const pieces = [];
+  if (toks[0].col > 0) pieces.push({c: null, t: lyric.slice(0, toks[0].col)});
+  toks.forEach((tk, i) => {
+    const end = i + 1 < toks.length ? toks[i + 1].col : Math.max(lyric.length, tk.col);
+    pieces.push({c: tokHtml(tk, ctx), n: tokText(tk, ctx).length, t: lyric.slice(tk.col, end)});
+  });
+  const chunks = [];
+  for (const p of pieces) {
+    const parts = p.t.match(/\s*\S+\s*|\s+/g) || [''];
+    let j = 0;
+    if (p.c) { // junta palavras até caber o acorde, para não abrir buraco na letra
+      let first = parts[j++];
+      while (j < parts.length && first.length < p.n + 1) first += parts[j++];
+      chunks.push({c: p.c, t: first});
+    }
+    for (; j < parts.length; j++) chunks.push({c: null, t: parts[j]});
+  }
+  let h = '<div class="ln pr">', open = false;
+  chunks.forEach((ch, k) => {
+    const prev = chunks[k - 1];
+    if (k === 0 || prev.t === '' || /\s$/.test(prev.t) || /^\s/.test(ch.t)) { if (open) h += '</span>'; h += '<span class="w">'; open = true; }
+    h += '<span class="k"><span class="cd">' + (ch.c || '') + '</span><span class="kt">' + esc(ch.t) + '</span></span>';
+  });
+  if (open) h += '</span>';
+  return h + '</div>';
+}
+function renderCifra(text, ctx, lyricsOnly) {
+  const lines = text.split('\n'), out = [];
+  let blk = [], tab = [];
+  const flushTab = () => { if (tab.length) { blk.push('<div class="tabblk">' + tab.map(esc).join('\n') + '</div>'); tab = []; } };
+  const flushBlk = () => { flushTab(); if (blk.length) { out.push('<div class="blk">' + blk.join('') + '</div>'); blk = []; } };
+  const onlySec = () => blk.length === 1 && blk[0].startsWith('<div class="ln sec"');
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i], kind = classify(l);
+    if (kind !== 'tab') flushTab();
+    if (kind === 'blank') { if (!onlySec()) flushBlk(); continue; }
+    if (kind === 'tab') { if (!lyricsOnly) tab.push(l); continue; }
+    if (kind === 'sec') { flushBlk(); blk.push('<div class="ln sec">' + esc(l.trim()) + '</div>'); continue; }
+    if (kind === 'chord') {
+      const toks = lineTokens(l);
+      if (lyricsOnly) {
+        const labels = toks.filter(t => t.kind === 'label');
+        if (labels.length) { flushBlk(); blk.push('<div class="ln sec">' + esc(labels.map(t => t.text).join(' ')) + '</div>'); }
+        continue;
+      }
+      const next = lines[i + 1];
+      if (next !== undefined && classify(next) === 'lyric') { blk.push(pairHtml(toks, next, ctx)); i++; }
+      else blk.push('<div class="ln co">' + layoutChordLine(toks, ctx, true) + '</div>');
+      continue;
+    }
+    blk.push('<div class="ln lyr">' + esc(lyricsOnly ? l.trim() : l) + '</div>');
+  }
+  flushBlk();
+  return out.join('');
+}
+function cifraPlain(text, ctx) {
+  return text.split('\n').map(l => classify(l) === 'chord' ? layoutChordLine(lineTokens(l), ctx, false) : l).join('\n');
+}
+function normalizeText(t) {
+  t = String(t || '').replace(/\r\n?/g, '\n').replace(/[   ]/g, ' ').replace(/[​‌‍﻿]/g, '');
+  t = t.split('\n').map(l => {
+    if (!l.includes('\t')) return l;
+    let o = ''; for (const c of l) o += c === '\t' ? ' '.repeat(4 - (o.length % 4)) : c; return o;
+  }).map(l => l.replace(/\s+$/, '')).join('\n');
+  // remove a linha "Tom: X" do topo (o tom fica no campo próprio)
+  // remove "Tom: X" e "Capotraste na N casa" do topo (ficam nos campos próprios)
+  const head = t.split('\n');
+  for (const re of [/^\s*tom:\s*[A-G]/i, /^\s*capotraste\s+na\s+\d/i]) {
+    const i = head.slice(0, 8).findIndex(l => re.test(l));
+    if (i >= 0) head.splice(i, 1);
+  }
+  return head.join('\n').replace(/^\n+/, '').replace(/\n{3,}/g, '\n\n').trimEnd();
+}
+
+/* =========================================================
+   Dados (salvos no próprio aparelho)
+   ========================================================= */
+const STORE_KEY = 'cifras:data:v1';
+const INSTRUMENTS = ['Violão','Guitarra','Teclado','Baixo','Ukulele','Cavaquinho','Voz','Bateria','Outro'];
+const SPEEDS = [6, 9, 13, 18, 24, 31, 40, 52, 66, 85];
+const DEFAULT_SETTINGS = {theme:'auto', fontSize:17, accidentals:'auto', columns:false, lyricsOnly:false, speed:3, wake:true, hintDismissed:false, lastInstrument:'Violão'};
+const DEMO = `[Intro] G  D/F#  Em7  C9
+
+[Primeira Parte]
+  G                   D/F#
+  Esta é uma cifra de exemplo
+  Em7               C9
+  Toque em Tom para transpor
+  G                D/F#
+  Aumente a letra, use o capo
+  Em7      C9         D4   D
+  E role a tela, por favor
+
+[Refrão]
+  C9         G/B      Am7
+  Cole a sua cifra no editor
+     D4               D
+  Do jeitinho que ela vem
+  C9        G/B      Em7
+  Tudo fica salvo no aparelho
+      C9       D4       G
+  Sem internet funciona também`;
+
+function seed() {
+  const now = Date.now();
+  return {
+    songs: [{id:'demo-song', title:'Exemplo de cifra', artist:'Toque no lápis para editar', key:'G', instrument:'Violão', capo:0, transpose:0, text:DEMO, createdAt:now, updatedAt:now}],
+    setlists: [{id:'demo-set', name:'Exemplo de repertório', date:todayStr(), items:[{songId:'demo-song', transpose:0, capo:0}], createdAt:now, updatedAt:now}],
+    settings: {...DEFAULT_SETTINGS}, deleted: {},
+  };
+}
+const ID_RE = /^[\w-]{1,40}$/;
+function cleanSong(x) {
+  if (!x || typeof x !== 'object' || !ID_RE.test(x.id)) return null;
+  return {id:x.id, title:String(x.title || 'Sem nome').slice(0, 200), artist:String(x.artist || '').slice(0, 200), key:parseKey(x.key) ? String(x.key).trim() : '',
+    instrument:String(x.instrument || '').slice(0, 40), capo:clampInt(x.capo, 0, 11), transpose:normTr(clampInt(x.transpose, -11, 11)),
+    text:String(x.text || '').slice(0, 200000), createdAt:+x.createdAt || Date.now(), updatedAt:+x.updatedAt || Date.now()};
+}
+function cleanSet(x) {
+  if (!x || typeof x !== 'object' || !ID_RE.test(x.id)) return null;
+  const items = (Array.isArray(x.items) ? x.items : []).filter(it => it && ID_RE.test(it.songId))
+    .map(it => ({songId:it.songId, transpose:normTr(clampInt(it.transpose, -11, 11)), capo:clampInt(it.capo, 0, 11)}));
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(x.date) ? x.date : todayStr();
+  return {id:x.id, name:String(x.name || 'Repertório').slice(0, 120), date, items, createdAt:+x.createdAt || Date.now(), updatedAt:+x.updatedAt || Date.now()};
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      return {songs:(d.songs || []).map(cleanSong).filter(Boolean), setlists:(d.setlists || []).map(cleanSet).filter(Boolean),
+        settings:Object.assign({}, DEFAULT_SETTINGS, d.settings || {}), deleted:d.deleted && typeof d.deleted === 'object' ? d.deleted : {}};
+    }
+  } catch (e) { console.warn(e); }
+  return seed();
+}
+let db = load();
+let persistAsked = false;
+function persist() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(db)); }
+  catch (e) { toast('Não consegui salvar — o armazenamento do aparelho está cheio?'); }
+  if (!persistAsked) { persistAsked = true; try { navigator.storage?.persist?.().catch(() => {}); } catch (e) {} }
+}
+const songById = id => db.songs.find(s => s.id === id);
+const setById = id => db.setlists.find(s => s.id === id);
+const sortedSongs = () => [...db.songs].sort((a, b) => a.title.localeCompare(b.title, 'pt-BR', {sensitivity:'base'}));
+function songKeyLabel(song, tr, capo) {
+  const ok = parseKey(song.key);
+  if (!ok) return tr ? (tr > 0 ? '+' : '') + tr : '';
+  const n = keyName(ok.pc + tr, ok.minor);
+  return capo ? n + ' · capo ' + capo : n;
+}
+function deleteSong(id) {
+  db.songs = db.songs.filter(s => s.id !== id);
+  db.setlists.forEach(s => { const n = s.items.length; s.items = s.items.filter(it => it.songId !== id); if (s.items.length !== n) s.updatedAt = Date.now(); });
+  db.deleted[id] = Date.now(); persist();
+}
+// Junta dados de outro aparelho/arquivo: o mais recente vence
+function mergeIn(data) {
+  let added = 0, updated = 0;
+  const tomb = Object.assign({}, db.deleted);
+  for (const [id, t] of Object.entries(data.deleted || {})) if (ID_RE.test(id) && +t && (!tomb[id] || tomb[id] < +t)) tomb[id] = +t;
+  for (const [kind, clean] of [['songs', cleanSong], ['setlists', cleanSet]]) {
+    for (const raw of (Array.isArray(data[kind]) ? data[kind] : [])) {
+      const inc = clean(raw); if (!inc) continue;
+      if (tomb[inc.id] && tomb[inc.id] >= inc.updatedAt) continue;
+      const i = db[kind].findIndex(x => x.id === inc.id);
+      if (i < 0) { db[kind].push(inc); added++; }
+      else if (inc.updatedAt > db[kind][i].updatedAt) { db[kind][i] = inc; updated++; }
+    }
+    db[kind] = db[kind].filter(x => !(tomb[x.id] && tomb[x.id] >= x.updatedAt));
+  }
+  db.deleted = tomb; persist();
+  return {added, updated};
+}
+
+/* =========================================================
+   Compartilhar (link com dados comprimidos no próprio endereço)
+   ========================================================= */
+function b64url(bytes) { let s = ''; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+function b64urlDecode(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; const bin = atob(s), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; }
+async function encodePayload(obj) {
+  const bytes = new TextEncoder().encode(JSON.stringify(obj));
+  try {
+    const cs = new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate'));
+    return 'z' + b64url(new Uint8Array(await new Response(cs).arrayBuffer()));
+  } catch (e) { return 'j' + b64url(bytes); }
+}
+async function decodePayload(code) {
+  let bytes = b64urlDecode(code.slice(1));
+  if (code[0] === 'z') { const ds = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate')); bytes = new Uint8Array(await new Response(ds).arrayBuffer()); }
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+async function shareText(title, text, url) {
+  if (navigator.share) {
+    try { await navigator.share(url ? {title, text, url} : {title, text}); return; }
+    catch (e) { if (e.name === 'AbortError') return; }
+  }
+  const full = url ? text + '\n' + url : text;
+  try { await navigator.clipboard.writeText(full); toast('Copiado! Agora é só colar no WhatsApp.'); }
+  catch (e) {
+    const sh = openSheet(`<h3>${esc(title)}</h3><p class="muted small">Copie o texto abaixo:</p><textarea class="code" style="min-height:40vh" readonly>${esc(full)}</textarea><div class="row end mt"><button class="btn primary" data-act="closeSheet">Fechar</button></div>`);
+    const ta = sh.querySelector('textarea'); ta.focus(); ta.select();
+  }
+}
+const isHttp = () => /^https?:$/.test(location.protocol);
+async function shareSetLink(id) {
+  const s = setById(id); if (!s) return;
+  if (!isHttp()) { toast('O link só funciona com o app publicado na internet. Use "Salvar arquivo".'); return; }
+  const songs = [...new Map(s.items.map(it => songById(it.songId)).filter(Boolean).map(x => [x.id, x])).values()];
+  const code = await encodePayload({app:'cifras', type:'setlist', setlist:s, songs});
+  const url = location.origin + location.pathname + '#import=' + code;
+  shareText(s.name, `🎸 Repertório "${s.name}" — ${fmtDate(s.date)}\n${s.items.map((it, i) => { const x = songById(it.songId); return x ? `${i + 1}. ${x.title}` : ''; }).filter(Boolean).join('\n')}\n\nAbra o link para importar as cifras:`, url);
+}
+function shareSetList(id) {
+  const s = setById(id); if (!s) return;
+  const lines = s.items.map((it, i) => { const x = songById(it.songId); if (!x) return ''; const k = songKeyLabel(x, it.transpose, it.capo); return `${i + 1}. ${x.title}${x.artist ? ' — ' + x.artist : ''}${k ? ` (${k})` : ''}`; }).filter(Boolean);
+  shareText(s.name, `🎸 ${s.name} — ${fmtDate(s.date, true)}\n\n${lines.join('\n')}`);
+}
+function downloadJSON(data, name) {
+  const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+  try {
+    const file = new File([blob], name, {type:'application/json'});
+    if (matchMedia('(pointer:coarse)').matches && navigator.canShare?.({files:[file]})) { navigator.share({files:[file], title:name}).catch(() => {}); return; }
+  } catch (e) {}
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+}
+function exportAll() { downloadJSON({app:'cifras', version:1, exportedAt:new Date().toISOString(), songs:db.songs, setlists:db.setlists, deleted:db.deleted}, `cifras-backup-${todayStr()}.json`); }
+function exportSet(id) {
+  const s = setById(id); if (!s) return;
+  const songs = [...new Map(s.items.map(it => songById(it.songId)).filter(Boolean).map(x => [x.id, x])).values()];
+  downloadJSON({app:'cifras', version:1, songs, setlists:[s]}, `repertorio-${norm(s.name).replace(/[^a-z0-9]+/g, '-')}-${s.date}.json`);
+}
+function importData(data) {
+  if (!data || typeof data !== 'object') throw new Error('arquivo inválido');
+  if (data.type === 'setlist') data = {songs:data.songs, setlists:[data.setlist]};
+  if (!Array.isArray(data.songs) && !Array.isArray(data.setlists)) throw new Error('arquivo inválido');
+  return mergeIn(data);
+}
+async function handleImportLink(code) {
+  history.replaceState(null, '', location.pathname + location.search + '#/');
+  viewHome();
+  let data;
+  try { data = await decodePayload(code); if (data.type !== 'setlist' || !data.setlist) throw 0; }
+  catch (e) { toast('Link inválido ou incompleto.'); return; }
+  const n = Array.isArray(data.songs) ? data.songs.length : 0;
+  if (!await ask(`Importar o repertório "${String(data.setlist.name || '')}" com ${plural(n, 'música', 'músicas')}? Fica salvo neste aparelho e funciona sem internet.`, 'Importar')) return;
+  try { importData(data); toast('Repertório importado!'); location.hash = '#/set/' + data.setlist.id; }
+  catch (e) { toast('Não consegui importar esse link.'); }
+}
+
+/* =========================================================
+   Folhas (janelas que sobem de baixo)
+   ========================================================= */
+let sheetOnClose = null;
+function openSheet(html, onClose) {
+  const root = $('#sheet-root');
+  root.innerHTML = '<div class="scrim" data-act="closeSheet"></div><div class="sheet" role="dialog" aria-modal="true">' + html + '</div>';
+  root.classList.add('open'); document.body.classList.add('noscroll');
+  sheetOnClose = onClose || null;
+  return root.querySelector('.sheet');
+}
+function closeSheet(silent) {
+  const root = $('#sheet-root');
+  if (!root.classList.contains('open')) return;
+  root.classList.remove('open'); root.innerHTML = ''; document.body.classList.remove('noscroll');
+  const f = sheetOnClose; sheetOnClose = null; if (f && !silent) f();
+}
+function ask(msg, okLabel = 'OK', danger = false) {
+  return new Promise(res => {
+    const sh = openSheet(`<p style="font-size:17px;margin:6px 0 18px">${esc(msg)}</p><div class="row end"><button class="btn" data-r="0">Cancelar</button><button class="btn ${danger ? 'danger' : 'primary'}" data-r="1">${esc(okLabel)}</button></div>`, () => res(false));
+    sh.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { sheetOnClose = null; closeSheet(); res(b.dataset.r === '1'); });
+  });
+}
+function menuSheet(title, items) {
+  const sh = openSheet((title ? `<h3>${esc(title)}</h3>` : '') + items.filter(Boolean).map((it, i) => `<button class="mi${it.danger ? ' danger' : ''}" data-i="${i}">${ic(it.icon)}<span>${esc(it.label)}</span></button>`).join(''));
+  const list = items.filter(Boolean);
+  sh.querySelectorAll('.mi').forEach(b => b.onclick = () => { closeSheet(true); list[+b.dataset.i].fn(); });
+}
+
+/* =========================================================
+   Cabeçalho / navegação
+   ========================================================= */
+function header({back, title, sub, right = '', extra = '', left}) {
+  const l = left || (back ? `<a class="ib" href="${back}" aria-label="Voltar">${ic('back')}</a>` : '<span style="width:6px"></span>');
+  $('#bar').innerHTML = `<div class="bar-in">${l}<div class="bar-title"><h1>${esc(title)}</h1>${sub ? `<small>${esc(sub)}</small>` : ''}</div>${right}</div>${extra}<div id="net">Sem internet — tudo continua funcionando ✓</div>`;
+}
+function setTabs(t) { document.querySelectorAll('#tabs a').forEach(a => a.classList.toggle('on', a.dataset.tab === t)); }
+function empty(title, text, actions = '') { return `<div class="empty">${ic('music')}<h3>${esc(title)}</h3><p>${esc(text)}</p>${actions}</div>`; }
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+let installEvt = null, prevHash = '', curHash = '', organizing = false;
+
+function route() {
+  const h = location.hash || '#/';
+  if (h.startsWith('#import=')) { handleImportLink(h.slice(8)); return; }
+  prevHash = curHash; curHash = h;
+  stopScroll(); keepAwake(false); closeSheet(true); S = null; EDIT = null;
+  document.body.classList.remove('full', 'hasnav');
+  let m;
+  if ((m = /^#\/set\/([\w-]+)$/.exec(h))) return viewSet(m[1]);
+  if ((m = /^#\/play\/([\w-]+)\/(\d+)$/.exec(h))) return viewSong({setId:m[1], idx:+m[2]});
+  if ((m = /^#\/song\/([\w-]+)$/.exec(h))) return viewSong({songId:m[1]});
+  if ((m = /^#\/edit\/([\w-]+)(?:\?set=([\w-]+))?$/.exec(h))) return viewEdit(m[1], m[2]);
+  if (h === '#/songs') return viewSongs();
+  if (h === '#/settings') return viewSettings();
+  return viewHome();
+}
+// re-renderiza a tela atual sem mexer no histórico
+function rerender() { const y = scrollY; curHash = prevHash; route(); scrollTo(0, y); }
+
+function notFound() {
+  setTabs('');
+  header({back:'#/', title:'Não encontrado'});
+  $('#app').innerHTML = empty('Não encontrei isso', 'Talvez tenha sido apagado.', '<a class="btn primary" href="#/">Voltar ao início</a>');
+}
+
+/* =========================================================
+   Tela: Repertórios
+   ========================================================= */
+function installHint() {
+  if (isStandalone() || db.settings.hintDismissed || !isHttp()) return '';
+  const how = isIOS()
+    ? 'No Safari, toque em <b style="display:inline">Compartilhar</b> e depois em <b style="display:inline">“Adicionar à Tela de Início”</b>.'
+    : (installEvt ? 'Toque no botão abaixo para instalar.' : 'No Chrome, abra o menu ⋮ e toque em <b style="display:inline">“Instalar app”</b> ou “Adicionar à tela inicial”.');
+  return `<div class="hint"><b>📲&nbsp; Instale o app para usar sem internet</b><span class="muted small">${how}${isIOS() ? ' Instale antes de cadastrar as músicas: no iPhone o app instalado guarda os dados separado do Safari.' : ''}</span>
+  <div class="row mt">${installEvt ? `<button class="btn primary sm" data-act="install">Instalar</button>` : ''}<button class="btn sm" data-act="dismissHint">Entendi</button></div></div>`;
+}
+function dateBox(s) {
+  const d = parseDate(s);
+  const wd = d.toLocaleDateString('pt-BR', {weekday:'short'}).replace('.', '');
+  const mo = d.toLocaleDateString('pt-BR', {month:'short'}).replace('.', '');
+  return `<div class="date"><span>${esc(wd)}</span><b>${d.getDate()}</b><span>${esc(mo)}</span></div>`;
+}
+function setCard(s) {
+  const songs = s.items.map(it => songById(it.songId)).filter(Boolean);
+  const dd = dayDiff(s.date), rel = dd === 0 ? 'Hoje' : dd === 1 ? 'Amanhã' : '';
+  return `<a class="item${dd === 0 ? ' today' : ''}" href="#/set/${s.id}">${dateBox(s.date)}<div class="meta"><div class="t">${esc(s.name)}</div><div class="s">${rel ? `<em>${rel}</em> · ` : ''}${plural(songs.length, 'música', 'músicas')}${songs.length ? ' · ' + esc(songs.slice(0, 3).map(x => x.title).join(', ')) : ''}</div></div>${ic('next')}</a>`;
+}
+function viewHome() {
+  setTabs('home');
+  header({title:'Repertórios', right:`<button class="ib" data-act="newSet" aria-label="Novo repertório">${ic('plus')}</button>`});
+  const up = db.setlists.filter(s => dayDiff(s.date) >= 0).sort((a, b) => a.date.localeCompare(b.date) || b.createdAt - a.createdAt);
+  const past = db.setlists.filter(s => dayDiff(s.date) < 0).sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
+  let h = installHint();
+  if (!db.setlists.length) h += empty('Nenhum repertório ainda', 'Crie o repertório do culto ou do ensaio e adicione as músicas que você vai tocar.', `<button class="btn primary" data-act="newSet">${ic('plus')} Novo repertório</button>`);
+  if (up.length) h += `<div class="h2">Próximos</div><div class="list">${up.map(setCard).join('')}</div>`;
+  if (past.length) h += `<div class="h2">Anteriores</div><div class="list">${past.map(setCard).join('')}</div>`;
+  if (db.setlists.length) h += `<div class="row mt"><button class="btn grow" data-act="newSet">${ic('plus')} Novo repertório</button></div>`;
+  $('#app').innerHTML = h;
+}
+function setForm(s) {
+  const isNew = !s;
+  const sh = openSheet(`<h3>${isNew ? 'Novo repertório' : 'Editar repertório'}</h3>
+    <div class="field"><label for="fs-name">Nome</label><input id="fs-name" type="text" maxlength="120" value="${esc(s ? s.name : 'Culto')}" placeholder="Ex.: Culto de domingo, Ensaio"></div>
+    <div class="field"><label for="fs-date">Data</label><input id="fs-date" type="date" value="${esc(s ? s.date : todayStr())}"></div>
+    <div class="row end"><button class="btn" data-act="closeSheet">Cancelar</button><button class="btn primary" id="fs-ok">${isNew ? 'Criar' : 'Salvar'}</button></div>`);
+  sh.querySelector('#fs-ok').onclick = () => {
+    const name = $('#fs-name').value.trim() || 'Repertório', date = $('#fs-date').value || todayStr(), now = Date.now();
+    closeSheet(true);
+    if (isNew) { const ns = {id:uid(), name, date, items:[], createdAt:now, updatedAt:now}; db.setlists.push(ns); persist(); location.hash = '#/set/' + ns.id; }
+    else { s.name = name; s.date = date; s.updatedAt = now; persist(); rerender(); }
+  };
+}
+
+/* =========================================================
+   Tela: um repertório
+   ========================================================= */
+function viewSet(id) {
+  const s = setById(id); if (!s) return notFound();
+  setTabs('home');
+  const before = s.items.length;
+  s.items = s.items.filter(it => songById(it.songId));
+  if (s.items.length !== before) persist();
+  const dd = dayDiff(s.date);
+  header({back:'#/', title:s.name, sub:(dd === 0 ? 'Hoje · ' : dd === 1 ? 'Amanhã · ' : '') + fmtDate(s.date, true),
+    right:`<button class="ib" data-act="shareMenu" data-id="${s.id}" aria-label="Enviar">${ic('share')}</button><button class="ib" data-act="setMenu" data-id="${s.id}" aria-label="Mais opções">${ic('more')}</button>`});
+  const n = s.items.length;
+  let h = '';
+  if (n) {
+    h += `<div class="row"><a class="btn primary grow" href="#/play/${s.id}/0">${ic('play')} Tocar repertório</a><button class="btn" data-act="organize">${organizing ? ic('check') + ' Pronto' : ic('sort') + ' Organizar'}</button></div>`;
+    h += `<div class="list mt">${s.items.map((it, i) => {
+      const song = songById(it.songId), k = songKeyLabel(song, it.transpose, it.capo);
+      const sub = esc([song.artist, song.instrument].filter(Boolean).join(' · '));
+      if (organizing) return `<div class="item"><span class="num">${i + 1}</span><div class="meta"><div class="t">${esc(song.title)}</div><div class="s">${sub}</div></div><div class="ord">
+        <button class="ib sm" data-act="mv" data-id="${s.id}" data-i="${i}" data-d="-1" ${i === 0 ? 'disabled' : ''} aria-label="Subir">${ic('up')}</button>
+        <button class="ib sm" data-act="mv" data-id="${s.id}" data-i="${i}" data-d="1" ${i === n - 1 ? 'disabled' : ''} aria-label="Descer">${ic('down')}</button>
+        <button class="ib sm danger" data-act="rmItem" data-id="${s.id}" data-i="${i}" aria-label="Tirar do repertório">${ic('x')}</button></div></div>`;
+      return `<a class="item" href="#/play/${s.id}/${i}"><span class="num">${i + 1}</span><div class="meta"><div class="t">${esc(song.title)}</div><div class="s">${sub}</div></div>${k ? `<span class="badge">${esc(k)}</span>` : ''}</a>`;
+    }).join('')}</div>`;
+  } else h += empty('Repertório vazio', 'Adicione as músicas que vão ser tocadas. Você pode escolher das suas músicas ou colar uma cifra nova.');
+  h += `<div class="row mt"><button class="btn grow${n ? '' : ' primary'}" data-act="addSongs" data-id="${s.id}">${ic('plus')} Adicionar músicas</button></div>`;
+  $('#app').innerHTML = h;
+}
+function addSongsSheet(setId) {
+  const s = setById(setId); if (!s) return;
+  const chosen = [], inSet = new Set(s.items.map(it => it.songId));
+  const sh = openSheet(`<h3>Adicionar músicas</h3>
+    <div class="search">${ic('search')}<input type="search" id="as-q" placeholder="Buscar por música ou artista" autocomplete="off"></div>
+    <div class="list pick" id="as-list"></div>
+    <div class="sheet-foot row"><a class="btn" href="#/edit/new?set=${setId}">${ic('plus')} Colar cifra nova</a><button class="btn primary grow" id="as-ok" disabled>Adicionar</button></div>`);
+  const draw = () => {
+    const q = norm($('#as-q').value);
+    const list = sortedSongs().filter(x => !q || norm(x.title + ' ' + x.artist).includes(q));
+    $('#as-list').innerHTML = list.length ? list.map(x => `<button class="item pickrow${chosen.includes(x.id) ? ' on' : ''}" data-id="${x.id}"><span class="chk">${ic('check')}</span><div class="meta"><div class="t">${esc(x.title)}</div><div class="s">${esc([x.artist, x.instrument].filter(Boolean).join(' · '))}${inSet.has(x.id) ? ' · <span class="in">já está no repertório</span>' : ''}</div></div>${x.key ? `<span class="badge">${esc(songKeyLabel(x, x.transpose, 0))}</span>` : ''}</button>`).join('')
+      : `<p class="muted center">${db.songs.length ? 'Nenhuma música encontrada.' : 'Você ainda não tem músicas. Toque em “Colar cifra nova”.'}</p>`;
+    const ok = $('#as-ok'); ok.disabled = !chosen.length; ok.textContent = chosen.length ? `Adicionar (${chosen.length})` : 'Adicionar';
+  };
+  sh.querySelector('#as-q').addEventListener('input', draw);
+  sh.querySelector('#as-list').addEventListener('click', e => {
+    const b = e.target.closest('.pickrow'); if (!b) return;
+    const i = chosen.indexOf(b.dataset.id); if (i < 0) chosen.push(b.dataset.id); else chosen.splice(i, 1);
+    draw();
+  });
+  sh.querySelector('#as-ok').onclick = () => {
+    chosen.forEach(id => { const x = songById(id); if (x) s.items.push({songId:id, transpose:x.transpose || 0, capo:x.capo || 0}); });
+    s.updatedAt = Date.now(); persist(); closeSheet(true); toast(plural(chosen.length, 'música adicionada', 'músicas adicionadas')); rerender();
+  };
+  draw();
+}
+
+/* =========================================================
+   Tela: lista de músicas
+   ========================================================= */
+let songQuery = '', songFilter = '';
+function viewSongs() {
+  setTabs('songs');
+  header({title:'Músicas', sub:plural(db.songs.length, 'música salva', 'músicas salvas'), right:`<a class="ib" href="#/edit/new" aria-label="Nova música">${ic('plus')}</a>`});
+  if (!db.songs.length) {
+    $('#app').innerHTML = empty('Nenhuma música ainda', 'Copie a cifra de qualquer site e cole aqui. Fica salva no aparelho e abre sem internet.', `<a class="btn primary" href="#/edit/new">${ic('plus')} Nova música</a>`);
+    return;
+  }
+  const insts = [...new Set(db.songs.map(s => s.instrument).filter(Boolean))].sort((a, b) => INSTRUMENTS.indexOf(a) - INSTRUMENTS.indexOf(b));
+  if (songFilter && !insts.includes(songFilter)) songFilter = '';
+  $('#app').innerHTML = `<div class="search">${ic('search')}<input type="search" id="q" placeholder="Buscar por música ou artista" value="${esc(songQuery)}" autocomplete="off"></div>
+    ${insts.length > 1 ? `<div class="chips">${['', ...insts].map(v => `<button class="chip${songFilter === v ? ' on' : ''}" data-act="filt" data-v="${esc(v)}">${v ? esc(v) : 'Todas'}</button>`).join('')}</div>` : ''}
+    <div class="list" id="songlist"></div>
+    <div class="row mt"><a class="btn grow" href="#/edit/new">${ic('plus')} Nova música</a></div>`;
+  drawSongList();
+  $('#q').addEventListener('input', e => { songQuery = e.target.value; drawSongList(); });
+}
+function drawSongList() {
+  const q = norm(songQuery);
+  const list = sortedSongs().filter(x => (!songFilter || x.instrument === songFilter) && (!q || norm(x.title + ' ' + x.artist).includes(q)));
+  $('#songlist').innerHTML = list.length ? list.map(x => {
+    const k = songKeyLabel(x, x.transpose, x.capo);
+    return `<a class="item" href="#/song/${x.id}"><div class="meta"><div class="t">${esc(x.title)}</div><div class="s">${esc([x.artist, x.instrument].filter(Boolean).join(' · ')) || '&nbsp;'}</div></div>${k ? `<span class="badge">${esc(k)}</span>` : ''}</a>`;
+  }).join('') : `<p class="muted center">Nenhuma música encontrada.</p>`;
+}
+
+/* =========================================================
+   Tela: cifra (modo de tocar)
+   ========================================================= */
+let S = null; // {song, item, set, idx}
+function viewSong(c) {
+  let song, item = null, set = null;
+  if (c.setId) {
+    set = setById(c.setId); if (!set) return notFound();
+    set.items = set.items.filter(it => songById(it.songId));
+    item = set.items[c.idx];
+    if (!item) { location.replace('#/set/' + set.id); return; }
+    song = songById(item.songId);
+  } else { song = songById(c.songId); if (!song) return notFound(); }
+  S = {song, item, set, idx:c.idx};
+  document.body.classList.add('full'); if (set) document.body.classList.add('hasnav');
+  header({back:set ? '#/set/' + set.id : '#/songs', title:song.title, sub:[song.artist, song.instrument].filter(Boolean).join(' · '),
+    right:`<a class="ib" href="#/edit/${song.id}" aria-label="Editar cifra">${ic('edit')}</a><button class="ib" data-act="songMenu" aria-label="Mais opções">${ic('more')}</button>`,
+    extra:'<div class="tools" id="tools"></div>'});
+  let nav = '';
+  if (set) {
+    const n = set.items.length, next = c.idx < n - 1 ? songById(set.items[c.idx + 1].songId) : null;
+    nav = `<nav class="setnav"><button class="btn" data-act="go" data-d="-1" ${c.idx > 0 ? '' : 'disabled'} aria-label="Música anterior">${ic('back')}</button>
+      <div class="mid">${c.idx + 1} de ${n}<b>${next ? 'Próxima: ' + esc(next.title) : 'Última música'}</b></div>
+      <button class="btn primary" data-act="go" data-d="1" ${next ? '' : 'disabled'} aria-label="Próxima música">${ic('next')}</button></nav>`;
+  }
+  $('#app').innerHTML = `<div id="cifra" class="cifra"></div>${nav}`;
+  drawSong();
+  if (db.settings.wake) keepAwake(true);
+}
+const target = () => S.item || S.song;
+function drawTools() {
+  if (!S) return;
+  const t = target(), tr = t.transpose || 0, capo = t.capo || 0, ctx = viewCtx(S.song, tr, capo);
+  const keyLbl = ctx.target ? ctx.target.name : (tr ? (tr > 0 ? '+' : '') + tr : '—');
+  $('#tools').innerHTML = `<button class="tb key" data-act="keySheet" aria-label="Mudar tom e capo"><small>Tom</small>${capo ? `<span class="kc"><b>${esc(keyLbl)}</b><small>capo ${capo}</small></span>` : `<b>${esc(keyLbl)}</b>`}</button>
+    <button class="tb" data-act="tr" data-d="-1" aria-label="Meio tom abaixo">−½</button>
+    <button class="tb" data-act="tr" data-d="1" aria-label="Meio tom acima">+½</button>
+    <button class="tb" data-act="fs" data-d="-1" aria-label="Diminuir letra"><small>A</small>−</button>
+    <button class="tb" data-act="fs" data-d="1" aria-label="Aumentar letra">A+</button>
+    <button class="tb${scrolling ? ' on' : ''}" data-act="scroll" aria-label="Rolagem automática">${ic(scrolling ? 'pause' : 'play')}</button>
+    <button class="tb${db.settings.lyricsOnly ? ' on' : ''}" data-act="lyrics" aria-label="Mostrar só a letra">Letra</button>`;
+}
+function drawSong() {
+  if (!S) return;
+  drawTools();
+  const t = target(), tr = t.transpose || 0, capo = t.capo || 0, ctx = viewCtx(S.song, tr, capo);
+  const el = $('#cifra');
+  el.style.setProperty('--fs', db.settings.fontSize + 'px');
+  el.classList.toggle('cols', !!db.settings.columns);
+  el.classList.toggle('lyr-only', !!db.settings.lyricsOnly);
+  let h = '';
+  if (capo && ctx.shapes && !db.settings.lyricsOnly) h += `<div class="capo-note">Capotraste na ${capo}ª casa · formas de <b>${esc(ctx.shapes.name)}</b> · soa em <b>${esc(ctx.target.name)}</b></div>`;
+  h += S.song.text.trim() ? renderCifra(S.song.text, ctx, db.settings.lyricsOnly)
+    : `<div class="empty">${ic('music')}<h3>Cifra vazia</h3><p>Toque no lápis lá em cima para colar a cifra.</p><a class="btn primary" href="#/edit/${S.song.id}">${ic('edit')} Colar cifra</a></div>`;
+  el.innerHTML = h;
+}
+function saveTarget() { const now = Date.now(); if (S.item) S.set.updatedAt = now; else S.song.updatedAt = now; persist(); }
+function setTr(v) { target().transpose = normTr(v); saveTarget(); drawSong(); }
+function setCapo(v) { target().capo = clampInt(v, 0, 11); saveTarget(); drawSong(); }
+function keySheet() {
+  const sh = openSheet('');
+  const ok = parseKey(S.song.key);
+  const draw = () => {
+    const t = target(), tr = t.transpose || 0, capo = t.capo || 0, ctx = viewCtx(S.song, tr, capo);
+    let h = '<h3>Tom</h3>';
+    if (ok) {
+      const names = ok.minor ? MIN : MAJ, cur = mod12(ok.pc + tr);
+      h += `<div class="keys">${names.map((n, pc) => `<button class="${pc === cur ? 'on' : ''}${pc === ok.pc ? ' orig' : ''}" data-pc="${pc}">${n}</button>`).join('')}</div>
+        <p class="muted small" style="min-height:1.5em">Original em <b>${esc(keyName(ok.pc, ok.minor))}</b>${tr ? ` · ${tr > 0 ? 'subiu' : 'desceu'} ${plural(Math.abs(tr), 'semitom', 'semitons')}` : ''}</p>`;
+    } else {
+      h += `<p class="muted small">O tom original desta música não foi definido (edite a música para escolher). Dá para ajustar por semitons:</p>
+        <div class="stepper"><button class="ib bordered" data-st="tr" data-d="-1" aria-label="Descer">${ic('minus')}</button><div class="val">${tr ? (tr > 0 ? '+' : '') + tr + ' semitom' + (Math.abs(tr) > 1 ? 's' : '') : 'Original'}</div><button class="ib bordered" data-st="tr" data-d="1" aria-label="Subir">${ic('plus')}</button></div>`;
+    }
+    h += `<div class="h3">Capotraste</div>
+      <div class="stepper"><button class="ib bordered" data-st="capo" data-d="-1" ${capo ? '' : 'disabled'} aria-label="Menos">${ic('minus')}</button><div class="val">${capo ? capo + 'ª casa' : 'Sem capo'}</div><button class="ib bordered" data-st="capo" data-d="1" ${capo >= 11 ? 'disabled' : ''} aria-label="Mais">${ic('plus')}</button></div>
+      <p class="muted small" style="min-height:4.4em">${capo && ctx.shapes ? `Você faz as formas de <b>${esc(ctx.shapes.name)}</b> e o som sai em <b>${esc(ctx.target.name)}</b>.` : 'Para violão, guitarra, ukulele e cavaquinho: com capo, os acordes mostrados viram as formas que você faz.'}</p>
+      <div class="row end mt"><button class="btn" data-reset ${!tr && !capo ? 'disabled' : ''}>Voltar ao original</button><button class="btn primary" data-act="closeSheet">Pronto</button></div>`;
+    sh.innerHTML = h;
+  };
+  sh.onclick = e => {
+    const b = e.target.closest('button'); if (!b || b.disabled) return;
+    const t = target();
+    if (b.dataset.pc !== undefined) setTr(+b.dataset.pc - ok.pc);
+    else if (b.dataset.st === 'tr') setTr((t.transpose || 0) + +b.dataset.d);
+    else if (b.dataset.st === 'capo') setCapo((t.capo || 0) + +b.dataset.d);
+    else if (b.hasAttribute('data-reset')) { t.transpose = 0; t.capo = 0; saveTarget(); drawSong(); }
+    else return;
+    draw();
+  };
+  draw();
+}
+function songMenu() {
+  const {song, set, item} = S;
+  menuSheet(song.title, [
+    {icon:'text', label:'Enviar cifra no tom atual (WhatsApp)', fn:() => {
+      const t = target(), ctx = viewCtx(song, t.transpose || 0, t.capo || 0);
+      const info = ctx.target ? `Tom: ${ctx.target.name}${t.capo ? ` (capo na ${t.capo}ª casa, formas de ${ctx.shapes.name})` : ''}` : '';
+      shareText(song.title, `*${song.title}*${song.artist ? ' — ' + song.artist : ''}\n${info}\n\n\`\`\`\n${cifraPlain(song.text, ctx)}\n\`\`\``);
+    }},
+    {icon:'list', label:'Adicionar a um repertório', fn:() => pickSetSheet(song)},
+    innerWidth >= 900 ? {icon:'cols', label:db.settings.columns ? 'Mostrar em uma coluna' : 'Mostrar em duas colunas', fn:() => { db.settings.columns = !db.settings.columns; persist(); drawSong(); }} : null,
+    {icon:'copy', label:'Duplicar (ex.: versão para outro instrumento)', fn:() => {
+      const now = Date.now(), c = {...song, id:uid(), title:song.title + ' (cópia)', createdAt:now, updatedAt:now};
+      db.songs.push(c); persist(); location.hash = '#/edit/' + c.id;
+    }},
+    set ? {icon:'x', label:'Tirar deste repertório', fn:() => { set.items.splice(set.items.indexOf(item), 1); set.updatedAt = Date.now(); persist(); toast('Removida do repertório'); location.replace('#/set/' + set.id); }} : null,
+    {icon:'trash', label:'Excluir música', danger:true, fn:async () => {
+      if (await ask(`Excluir “${song.title}”? Ela também sai dos repertórios. Não dá para desfazer.`, 'Excluir', true)) { deleteSong(song.id); toast('Música excluída'); location.replace(set ? '#/set/' + set.id : '#/songs'); }
+    }},
+  ]);
+}
+function pickSetSheet(song) {
+  const sets = [...db.setlists].sort((a, b) => (dayDiff(a.date) < 0) - (dayDiff(b.date) < 0) || (dayDiff(a.date) < 0 ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date)));
+  const sh = openSheet(`<h3>Adicionar a um repertório</h3><div class="list pick">${sets.map(s => `<button class="item" data-id="${s.id}">${dateBox(s.date)}<div class="meta"><div class="t">${esc(s.name)}</div><div class="s">${plural(s.items.length, 'música', 'músicas')}</div></div></button>`).join('')}</div>
+    <div class="sheet-foot row"><button class="btn grow" id="ps-new">${ic('plus')} Novo repertório</button></div>`);
+  const add = s => { s.items.push({songId:song.id, transpose:song.transpose || 0, capo:song.capo || 0}); s.updatedAt = Date.now(); persist(); closeSheet(true); toast(`Adicionada em “${s.name}”`); };
+  sh.querySelectorAll('[data-id]').forEach(b => b.onclick = () => add(setById(b.dataset.id)));
+  sh.querySelector('#ps-new').onclick = () => {
+    const now = Date.now(), ns = {id:uid(), name:'Culto', date:todayStr(), items:[], createdAt:now, updatedAt:now};
+    db.setlists.push(ns); add(ns); location.hash = '#/set/' + ns.id;
+  };
+}
+
+// ---------- rolagem automática ----------
+let scrolling = false, raf = 0, lastT = 0, acc = 0, holdUntil = 0;
+function startScroll() { if (scrolling) return; scrolling = true; lastT = 0; acc = 0; raf = requestAnimationFrame(tick); drawScrollCtl(); drawTools(); }
+function stopScroll() { if (!scrolling) return; scrolling = false; cancelAnimationFrame(raf); drawScrollCtl(); drawTools(); }
+function tick(t) {
+  if (!scrolling) return;
+  if (lastT && t > holdUntil) {
+    acc += Math.min(250, t - lastT) / 1000 * SPEEDS[db.settings.speed];
+    const px = Math.floor(acc);
+    if (px > 0) { scrollBy(0, px); acc -= px; }
+    if (scrollY + innerHeight >= document.documentElement.scrollHeight - 2) { stopScroll(); return; }
+  }
+  lastT = t; raf = requestAnimationFrame(tick);
+}
+function drawScrollCtl() {
+  const el = $('#scrollctl');
+  if (!scrolling) { el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = `<button data-act="spd" data-d="-1" aria-label="Mais devagar">${ic('minus')}</button><span aria-label="Velocidade">${db.settings.speed + 1}</span><button data-act="spd" data-d="1" aria-label="Mais rápido">${ic('plus')}</button><button data-act="scroll" aria-label="Parar rolagem">${ic('pause')}</button>`;
+}
+const hold = () => { holdUntil = performance.now() + 900; };
+addEventListener('touchstart', () => { if (scrolling) holdUntil = Infinity; }, {passive:true});
+addEventListener('touchend', () => { if (scrolling) hold(); }, {passive:true});
+addEventListener('wheel', () => { if (scrolling) hold(); }, {passive:true});
+
+// ---------- manter a tela ligada ----------
+let wakeLock = null, wantWake = false;
+async function keepAwake(on) {
+  wantWake = on;
+  try {
+    if (on && 'wakeLock' in navigator && !wakeLock && document.visibilityState === 'visible') {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    } else if (!on && wakeLock) { const w = wakeLock; wakeLock = null; await w.release(); }
+  } catch (e) { wakeLock = null; }
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && wantWake) keepAwake(true); });
+
+/* =========================================================
+   Tela: editar / nova música
+   ========================================================= */
+function viewEdit(id, setId) {
+  const isNew = id === 'new';
+  const song = isNew ? {id:uid(), title:'', artist:'', key:'', instrument:db.settings.lastInstrument || 'Violão', capo:0, transpose:0, text:''} : songById(id);
+  if (!song) return notFound();
+  document.body.classList.add('full');
+  const ret = setId ? '#/set/' + setId : (prevHash && !prevHash.startsWith('#/edit') ? prevHash : (isNew ? '#/songs' : '#/song/' + id));
+  header({title:isNew ? 'Nova música' : 'Editar música', left:`<button class="ib" data-act="cancelEdit" aria-label="Cancelar">${ic('x')}</button>`,
+    right:`<button class="btn primary sm" data-act="saveSong" style="margin-right:4px">Salvar</button>`});
+  const ok = parseKey(song.key), curKey = ok ? keyName(ok.pc, ok.minor) : '';
+  const opt = (v, l, sel) => `<option value="${esc(v)}"${sel ? ' selected' : ''}>${esc(l)}</option>`;
+  const insts = INSTRUMENTS.includes(song.instrument) || !song.instrument ? INSTRUMENTS : [song.instrument, ...INSTRUMENTS];
+  $('#app').innerHTML = `
+    <div class="field"><label for="e-title">Nome da música</label><input id="e-title" type="text" maxlength="200" value="${esc(song.title)}" placeholder="Nome do louvor" autocomplete="off"></div>
+    <div class="field"><label for="e-artist">Artista / ministério</label><input id="e-artist" type="text" maxlength="200" value="${esc(song.artist)}" placeholder="Opcional" autocomplete="off"></div>
+    <div class="grid3">
+      <div class="field"><label for="e-inst">Instrumento</label><select id="e-inst">${insts.map(v => opt(v, v, v === song.instrument)).join('')}</select></div>
+      <div class="field"><label for="e-key">Tom da cifra</label><select id="e-key">${opt('', 'Detectar', !curKey)}<optgroup label="Maior">${MAJ.map(k => opt(k, k, k === curKey)).join('')}</optgroup><optgroup label="Menor">${MIN.map(k => opt(k, k, k === curKey)).join('')}</optgroup></select></div>
+      <div class="field"><label for="e-capo">Capo</label><select id="e-capo">${Array.from({length:12}, (_, i) => opt(i, i ? i + 'ª casa' : 'Sem', i === (song.capo || 0))).join('')}</select></div>
+    </div>
+    <p class="help" id="e-det" style="margin:-6px 2px 12px"></p>
+    <div class="field"><label for="e-text">Cifra</label>
+      <textarea id="e-text" class="code" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="Cole a cifra aqui. Exemplo:
+
+[Intro] G  D  Em  C
+
+[Primeira Parte]
+G               D
+  Linha da letra aqui
+Em              C
+  Outra linha da letra">${esc(song.text)}</textarea>
+      <p class="help">Dica: no site de cifras, selecione a cifra, copie e cole aqui — do jeito que vem. Os acordes ficam na linha de cima da letra. Marque as partes com [Refrão], [Ponte]…</p>
+    </div>
+    <div class="row"><button class="btn" data-act="previewToggle">${ic('music')} Ver como fica</button></div>
+    <div id="e-prev" class="card cifra mt" style="padding-bottom:14px" hidden></div>
+    ${isNew ? '' : `<button class="btn danger block mt" data-act="delSong">${ic('trash')} Excluir música</button>`}`;
+  const snap = () => ['e-title', 'e-artist', 'e-inst', 'e-key', 'e-capo', 'e-text'].map(i => $('#' + i).value).join('\u0001');
+  const initial = snap();
+  let capoTouched = false, detT;
+  const updDet = () => {
+    const txt = $('#e-text').value, det = $('#e-det');
+    const parts = [];
+    if (!capoTouched && $('#e-capo').value === '0') { const c = detectCapo(txt); if (c) $('#e-capo').value = c; }
+    if (!$('#e-key').value) {
+      const info = detectKeyInfo(txt), k = detectKey(txt);
+      if (info && info.shift) parts.push(`Tom detectado: cifra em formas de <b>${esc(info.written)}</b>, soando em <b>${esc(info.sounding)}</b> com capo.`);
+      else parts.push(k ? `Tom detectado: <b>${esc(k)}</b> (dá para mudar no campo “Tom da cifra”)` : 'Escolha o tom da cifra para poder transpor pelo nome do tom.');
+    }
+    det.innerHTML = txt.trim() ? parts.join(' ') : '';
+    if (!$('#e-prev').hidden) drawPreview();
+  };
+  $('#e-text').addEventListener('input', () => { clearTimeout(detT); detT = setTimeout(updDet, 250); });
+  $('#e-key').addEventListener('change', updDet);
+  $('#e-capo').addEventListener('change', () => { capoTouched = true; });
+  updDet();
+  EDIT = {song, isNew, setId, ret, dirty:() => snap() !== initial};
+  if (isNew) setTimeout(() => $('#e-title').focus(), 60);
+}
+let EDIT = null;
+function drawPreview() {
+  const txt = normalizeText($('#e-text').value);
+  const fake = {key:$('#e-key').value || detectKey(txt), text:txt};
+  $('#e-prev').innerHTML = txt ? renderCifra(txt, viewCtx(fake, 0, 0), false) : '<p class="muted">Nada para mostrar ainda.</p>';
+  $('#e-prev').style.setProperty('--fs', Math.min(db.settings.fontSize, 17) + 'px');
+}
+function saveSong() {
+  const {song, isNew, setId, ret} = EDIT;
+  const title = $('#e-title').value.trim();
+  if (!title) { toast('Dê um nome para a música'); $('#e-title').focus(); return; }
+  const raw = $('#e-text').value, text = normalizeText(raw), now = Date.now();
+  const key = $('#e-key').value || detectKey(raw);
+  const capo = clampInt($('#e-capo').value, 0, 11);
+  // cifra escrita em formas com capo: o tom que soa fica como transposição padrão
+  const info = !$('#e-key').value && detectKeyInfo(raw);
+  if (info && info.shift && capo) song.transpose = info.shift;
+  Object.assign(song, {title, artist:$('#e-artist').value.trim(), instrument:$('#e-inst').value, key, capo, text, updatedAt:now});
+  db.settings.lastInstrument = song.instrument;
+  if (isNew) {
+    song.createdAt = now; db.songs.push(song);
+    const s = setId && setById(setId);
+    if (s) { s.items.push({songId:song.id, transpose:song.transpose || 0, capo:song.capo}); s.updatedAt = now; }
+  }
+  persist(); EDIT = null; toast('Salvo');
+  location.replace(isNew ? (setId ? '#/set/' + setId : '#/song/' + song.id) : ret);
+}
+
+/* =========================================================
+   Tela: ajustes
+   ========================================================= */
+function viewSettings() {
+  setTabs('settings');
+  header({title:'Ajustes'});
+  const st = db.settings;
+  const seg = (act, cur, opts) => `<div class="seg">${opts.map(([v, l]) => `<button class="${cur === v ? 'on' : ''}" data-act="${act}" data-v="${v}">${l}</button>`).join('')}</div>`;
+  let inst;
+  if (isStandalone()) inst = '<p class="small" style="margin:0">✓ App instalado neste aparelho.</p>';
+  else if (installEvt) inst = `<button class="btn primary sm" data-act="install">${ic('phone')} Instalar app</button>`;
+  else if (isIOS()) inst = '<p class="small muted" style="margin:0">No Safari: toque em <b>Compartilhar</b> → <b>Adicionar à Tela de Início</b>.</p>';
+  else inst = '<p class="small muted" style="margin:0">No Chrome: menu ⋮ → <b>Instalar app</b> (ou “Adicionar à tela inicial”). No computador, use o ícone de instalar na barra de endereço.</p>';
+  $('#app').innerHTML = `
+    <div class="h2">Aparência</div>
+    <div class="card">
+      <div class="field" style="margin-bottom:12px"><label>Tema</label>${seg('theme', st.theme, [['auto', 'Automático'], ['light', 'Claro'], ['dark', 'Escuro']])}</div>
+      <div class="set-row"><div><b>Tamanho da letra</b><div class="small muted">Também dá para mudar na tela da cifra.</div></div>
+        <div class="stepper"><button class="ib bordered" data-act="setFs" data-d="-1" aria-label="Menor">${ic('minus')}</button><b style="min-width:30px;text-align:center">${st.fontSize}</b><button class="ib bordered" data-act="setFs" data-d="1" aria-label="Maior">${ic('plus')}</button></div></div>
+    </div>
+    <div class="h2">Acordes</div>
+    <div class="card">
+      <div class="field" style="margin-bottom:6px"><label>Escrita dos acidentes</label>${seg('accid', st.accidentals, [['auto', 'Automática'], ['sharp', 'Sempre ♯'], ['flat', 'Sempre ♭']])}</div>
+      <p class="help">Automática escolhe sustenido ou bemol de acordo com o tom (ex.: em F aparece Bb; em E aparece A#).</p>
+    </div>
+    <div class="h2">Na hora de tocar</div>
+    <div class="card">
+      <div class="set-row"><div><b>Manter a tela ligada</b><div class="small muted">A tela não apaga enquanto a cifra está aberta.</div></div><label class="switch"><input type="checkbox" data-act="wake" ${st.wake ? 'checked' : ''}><span></span></label></div>
+    </div>
+    <div class="h2">Usar sem internet</div>
+    <div class="card">
+      <p class="small" id="offst" style="margin:0 0 10px">Verificando…</p>
+      ${inst}
+    </div>
+    <div class="h2">Backup e outros aparelhos</div>
+    <div class="card">
+      <p class="small muted" style="margin:0 0 12px">As cifras ficam salvas só neste aparelho. Para levar do computador para o celular (ou fazer backup), salve um arquivo aqui e importe no outro. Também dá para mandar um repertório inteiro por link, no botão de enviar do repertório.</p>
+      <div class="row"><button class="btn grow" data-act="exportAll">${ic('download')} Salvar backup</button><button class="btn grow" data-act="importFile">${ic('upload')} Importar arquivo</button></div>
+    </div>
+    <div class="h2">Dados</div>
+    <div class="card">
+      <p class="small muted" style="margin:0 0 12px">${plural(db.songs.length, 'música', 'músicas')} e ${plural(db.setlists.length, 'repertório', 'repertórios')} salvos neste aparelho.</p>
+      <button class="btn danger sm" data-act="wipe">${ic('trash')} Apagar tudo</button>
+    </div>
+    <p class="center small muted" style="margin-top:24px">Minhas Cifras · versão ${VERSION}</p>`;
+  offlineStatus().then(t => { const el = $('#offst'); if (el) el.innerHTML = t; });
+}
+async function offlineStatus() {
+  if (!isHttp()) return 'Aberto direto do arquivo: funciona sem internet neste computador. Para o celular, use o endereço publicado.';
+  if (!('serviceWorker' in navigator)) return 'Este navegador não permite o modo offline. Tente o Chrome ou o Safari.';
+  try {
+    const reg = await navigator.serviceWorker.getRegistration();
+    if (reg && reg.active) return '✓ <b>Pronto para usar sem internet</b> neste aparelho.';
+  } catch (e) {}
+  return 'Preparando o modo offline… (abra o app uma vez com internet)';
+}
+
+/* =========================================================
+   Ações (cliques)
+   ========================================================= */
+const ACT = {
+  closeSheet:() => closeSheet(),
+  newSet:() => setForm(),
+  organize:() => { organizing = !organizing; rerender(); },
+  mv:el => { const s = setById(el.dataset.id), i = +el.dataset.i, j = i + +el.dataset.d; if (!s || j < 0 || j >= s.items.length) return; [s.items[i], s.items[j]] = [s.items[j], s.items[i]]; s.updatedAt = Date.now(); persist(); rerender(); },
+  rmItem:el => { const s = setById(el.dataset.id); if (!s) return; s.items.splice(+el.dataset.i, 1); s.updatedAt = Date.now(); persist(); rerender(); },
+  addSongs:el => addSongsSheet(el.dataset.id),
+  shareMenu:el => { const id = el.dataset.id; menuSheet('Enviar repertório', [
+    {icon:'link', label:'Link com as cifras (abre no app de quem receber)', fn:() => shareSetLink(id)},
+    {icon:'text', label:'Só a lista de músicas e tons (texto)', fn:() => shareSetList(id)},
+    {icon:'download', label:'Salvar arquivo do repertório', fn:() => exportSet(id)},
+  ]); },
+  setMenu:el => { const s = setById(el.dataset.id); if (!s) return; menuSheet(s.name, [
+    {icon:'edit', label:'Mudar nome ou data', fn:() => setForm(s)},
+    {icon:'copy', label:'Duplicar repertório', fn:() => { const now = Date.now(), c = {...s, id:uid(), name:s.name + ' (cópia)', date:todayStr(), items:s.items.map(it => ({...it})), createdAt:now, updatedAt:now}; db.setlists.push(c); persist(); location.hash = '#/set/' + c.id; }},
+    {icon:'trash', label:'Excluir repertório', danger:true, fn:async () => { if (await ask(`Excluir o repertório “${s.name}”? As músicas continuam salvas.`, 'Excluir', true)) { db.setlists = db.setlists.filter(x => x.id !== s.id); db.deleted[s.id] = Date.now(); persist(); location.replace('#/'); } }},
+  ]); },
+  filt:el => { songFilter = el.dataset.v; viewSongs(); },
+  keySheet:() => keySheet(),
+  tr:el => setTr((target().transpose || 0) + +el.dataset.d),
+  fs:el => { db.settings.fontSize = clampInt(db.settings.fontSize + +el.dataset.d, 11, 40); persist(); drawSong(); },
+  scroll:() => scrolling ? stopScroll() : startScroll(),
+  spd:el => { db.settings.speed = clampInt(db.settings.speed + +el.dataset.d, 0, SPEEDS.length - 1); persist(); drawScrollCtl(); },
+  lyrics:() => { db.settings.lyricsOnly = !db.settings.lyricsOnly; persist(); drawSong(); },
+  songMenu:() => songMenu(),
+  go:el => { if (!S || !S.set) return; const j = S.idx + +el.dataset.d; if (j >= 0 && j < S.set.items.length) location.replace(`#/play/${S.set.id}/${j}`); },
+  saveSong:() => saveSong(),
+  cancelEdit:async () => { if (EDIT && EDIT.dirty() && !await ask('Sair sem salvar as alterações?', 'Sair sem salvar', true)) return; const r = EDIT ? EDIT.ret : '#/'; EDIT = null; location.replace(r); },
+  previewToggle:() => { const p = $('#e-prev'); p.hidden = !p.hidden; if (!p.hidden) { drawPreview(); p.scrollIntoView({behavior:'smooth', block:'start'}); } },
+  delSong:async () => { const {song, ret} = EDIT; if (await ask(`Excluir “${song.title}”? Ela também sai dos repertórios. Não dá para desfazer.`, 'Excluir', true)) { deleteSong(song.id); EDIT = null; toast('Música excluída'); location.replace(/^#\/(song|play)\//.test(ret) ? '#/songs' : ret); } },
+  theme:el => { db.settings.theme = el.dataset.v; persist(); applyTheme(); viewSettings(); },
+  accid:el => { db.settings.accidentals = el.dataset.v; persist(); viewSettings(); },
+  setFs:el => { db.settings.fontSize = clampInt(db.settings.fontSize + +el.dataset.d, 11, 40); persist(); viewSettings(); },
+  exportAll:() => exportAll(),
+  importFile:() => $('#imp').click(),
+  install:async () => { if (!installEvt) return; installEvt.prompt(); try { await installEvt.userChoice; } catch (e) {} installEvt = null; rerender(); },
+  dismissHint:() => { db.settings.hintDismissed = true; persist(); rerender(); },
+  wipe:async () => {
+    if (!await ask('Apagar TODAS as músicas e repertórios deste aparelho? Faça um backup antes. Não dá para desfazer.', 'Apagar tudo', true)) return;
+    const now = Date.now(); db.songs.concat(db.setlists).forEach(x => { db.deleted[x.id] = now; });
+    db.songs = []; db.setlists = []; persist(); toast('Tudo apagado'); location.hash = '#/';
+  },
+};
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el || el.disabled || el.type === 'checkbox') return;
+  const f = ACT[el.dataset.act]; if (f) { e.preventDefault(); f(el, e); }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.matches('input[type=checkbox][data-act=wake]')) { db.settings.wake = el.checked; persist(); }
+  if (el.id === 'imp' && el.files && el.files[0]) {
+    const f = el.files[0]; el.value = '';
+    f.text().then(t => { const r = importData(JSON.parse(t)); toast(`Importado: ${plural(r.added, 'item novo', 'itens novos')}, ${plural(r.updated, 'atualizado', 'atualizados')}`); rerender(); })
+      .catch(() => toast('Esse arquivo não é um backup de cifras válido.'));
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('#sheet-root').classList.contains('open')) { closeSheet(); return; }
+  if (e.target.matches('input,textarea,select') || $('#sheet-root').classList.contains('open') || !S || !S.set) return;
+  if (e.key === 'ArrowRight') { ACT.go({dataset:{d:1}}); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft') { ACT.go({dataset:{d:-1}}); e.preventDefault(); }
+});
+
+/* =========================================================
+   Tema, internet, instalação, início
+   ========================================================= */
+function applyTheme() {
+  const t = db.settings.theme;
+  if (t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t);
+  requestAnimationFrame(() => { $('meta[name=theme-color]').content = getComputedStyle(document.body).backgroundColor; });
+}
+matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', applyTheme);
+const updNet = () => document.body.classList.toggle('offline', !navigator.onLine);
+addEventListener('online', updNet); addEventListener('offline', updNet);
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (/^#\/(settings)?$/.test(location.hash || '#/') && !$('#sheet-root').classList.contains('open')) rerender(); });
+addEventListener('appinstalled', () => { installEvt = null; toast('App instalado! Agora abre direto da tela inicial.'); });
+addEventListener('storage', e => { if (e.key === STORE_KEY && !EDIT) { db = load(); rerender(); } });
+addEventListener('hashchange', () => { organizing = false; scrollTo(0, 0); route(); });
+
+try { if (!localStorage.getItem(STORE_KEY)) persist(); } catch (e) {}
+applyTheme(); updNet(); route();
+if ('serviceWorker' in navigator && isHttp()) {
+  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW', e)));
+}
+</script>
+</body>
+</html>
