@@ -118,6 +118,8 @@ a.item:active,button.item:active{background:var(--surface2)}
 .hint b{display:block;margin-bottom:4px}
 .hint ol{margin:6px 0 10px;padding-left:20px}
 .hint li{margin:3px 0}
+.card.bm ol{margin:6px 0 12px;padding-left:20px}
+.card.bm li{margin:4px 0}
 
 /* ---------- busca e filtros ---------- */
 .search{position:relative;margin-bottom:10px}
@@ -225,6 +227,7 @@ body.hasnav #scrollctl{bottom:calc(82px + env(safe-area-inset-bottom))}
 .pickrow .in{font-size:12px;color:var(--muted);font-weight:650}
 .sheet-foot{position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom));background:var(--surface);padding:12px 0 4px;margin-top:8px}
 
+#upd{position:fixed;top:calc(64px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:45;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 #toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translate(-50%,16px);opacity:0;background:var(--text);color:var(--bg);padding:11px 16px;border-radius:12px;font-size:14.5px;font-weight:650;transition:.2s;z-index:70;pointer-events:none;max-width:min(92vw,460px);text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
@@ -245,7 +248,7 @@ body.hasnav #scrollctl{bottom:calc(82px + env(safe-area-inset-bottom))}
 
 <script>
 'use strict';
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 
 /* =========================================================
    Utilidades
@@ -486,8 +489,10 @@ function renderCifra(text, ctx, lyricsOnly) {
 function cifraPlain(text, ctx) {
   return text.split('\n').map(l => classify(l) === 'chord' ? layoutChordLine(lineTokens(l), ctx, false) : l).join('\n');
 }
+// tira caracteres invisíveis que os sites colocam (o Cifra Club põe um no começo de cada linha)
+const cleanChars = t => String(t || '').replace(/\r\n?/g, '\n').replace(/[\u00a0\u2007\u202f]/g, ' ').replace(/[\u200b\u200c\u200d\u2060\ufeff]/g, '');
 function normalizeText(t) {
-  t = String(t || '').replace(/\r\n?/g, '\n').replace(/[   ]/g, ' ').replace(/[​‌‍﻿]/g, '');
+  t = cleanChars(t);
   t = t.split('\n').map(l => {
     if (!l.includes('\t')) return l;
     let o = ''; for (const c of l) o += c === '\t' ? ' '.repeat(4 - (o.length % 4)) : c; return o;
@@ -680,6 +685,45 @@ async function handleImportLink(code) {
   catch (e) { toast('Não consegui importar esse link.'); }
 }
 
+// Música enviada pelo favorito "Salvar no Minhas Cifras": abre a tela de nova música já preenchida
+let PREFILL = null;
+async function handleAddLink(code) {
+  let d = null;
+  try { d = await decodePayload(code); if (!d || d.type !== 'song' || typeof d.text !== 'string') d = null; } catch (e) {}
+  if (!d) { history.replaceState(null, '', location.pathname + location.search + '#/songs'); route(); toast('Não consegui ler a cifra enviada. Tente de novo.'); return; }
+  PREFILL = {title:String(d.title || '').trim().slice(0, 200), artist:String(d.artist || '').trim().slice(0, 200), text:cleanChars(d.text).slice(0, 200000)};
+  history.replaceState(null, '', location.pathname + location.search + '#/songs');
+  location.replace('#/edit/new');
+}
+// Código do favorito. Roda na página da cifra (no navegador da pessoa) e manda a música para o app.
+function ccGrab(APP) {
+  if (location.href.indexOf(APP) === 0) { alert('Arraste este botão para a barra de favoritos. Depois use-o na página de uma música no Cifra Club.'); return; }
+  var pres = [].slice.call(document.querySelectorAll('pre')).sort(function (a, b) { return b.textContent.length - a.textContent.length; });
+  var pre = pres[0];
+  if (!pre || pre.textContent.replace(/\s/g, '').length < 10) { alert('Não achei uma cifra nesta página. Abra a música no Cifra Club e tente de novo.'); return; }
+  var one = function (s) { return String(s || '').replace(/[\u200b-\u200d\u2060\ufeff]/g, '').replace(/\s+/g, ' ').trim(); };
+  var text = pre.textContent.replace(/[\u200b-\u200d\u2060\ufeff]/g, '').replace(/\u00a0/g, ' ');
+  var page = document.body.innerText || document.body.textContent || '';
+  var tom = page.match(/Tom:\s*[A-G][#b]?m?(\s*\(forma dos acordes no tom de\s*[A-G][#b]?m?\))?/i);
+  var capo = page.match(/capotraste\s+na\s+\d+\S*\s*casa/i);
+  if (!capo) { var cb = document.getElementById('capo'), cm = cb && cb.textContent.match(/(\d+)\s*ª/); if (cm) capo = ['Capotraste na ' + cm[1] + 'ª casa']; }
+  var parts = document.title.split(' - ');
+  if (parts.length > 1 && /cifra ?club|cifras/i.test(parts[parts.length - 1])) parts.pop();
+  var seg = location.pathname.split('/')[1];
+  var art = seg && (document.querySelector('a[href="/' + seg + '/"] h2') || document.querySelector('a[href="/' + seg + '/"]'));
+  var h1 = document.querySelector('h1');
+  var title = one(h1 && h1.textContent) || (parts.length > 1 ? parts.slice(0, -1).join(' - ') : parts[0]);
+  var artist = one(art && art.textContent) || (parts.length > 1 ? parts[parts.length - 1] : '');
+  var head = (tom ? one(tom[0]) + '\n' : '') + (capo ? one(capo[0]) + '\n' : '');
+  var json = JSON.stringify({app: 'cifras', type: 'song', title: title, artist: artist, text: head + (head ? '\n' : '') + text});
+  var code = 'j' + btoa(unescape(encodeURIComponent(json))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  var url = APP + '#add=' + code;
+  var w = window.open(url, '_blank');
+  if (!w) location.href = url;
+}
+const appUrl = () => location.origin + location.pathname.replace(/index\.html$/, '');
+const bookmarkletCode = () => 'javascript:' + encodeURIComponent('(' + ccGrab.toString() + ')(' + JSON.stringify(appUrl()) + ')');
+
 /* =========================================================
    Folhas (janelas que sobem de baixo)
    ========================================================= */
@@ -725,6 +769,7 @@ let installEvt = null, prevHash = '', curHash = '', organizing = false;
 function route() {
   const h = location.hash || '#/';
   if (h.startsWith('#import=')) { handleImportLink(h.slice(8)); return; }
+  if (h.startsWith('#add=')) { handleAddLink(h.slice(5)); return; }
   prevHash = curHash; curHash = h;
   stopScroll(); keepAwake(false); closeSheet(true); S = null; EDIT = null;
   document.body.classList.remove('full', 'hasnav');
@@ -1045,7 +1090,8 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
    ========================================================= */
 function viewEdit(id, setId) {
   const isNew = id === 'new';
-  const song = isNew ? {id:uid(), title:'', artist:'', key:'', instrument:db.settings.lastInstrument || 'Violão', capo:0, transpose:0, text:''} : songById(id);
+  const pre = isNew ? PREFILL : null; PREFILL = null;
+  const song = isNew ? {id:uid(), title:pre ? pre.title : '', artist:pre ? pre.artist : '', key:'', instrument:db.settings.lastInstrument || 'Violão', capo:0, transpose:0, text:pre ? pre.text : ''} : songById(id);
   if (!song) return notFound();
   document.body.classList.add('full');
   const ret = setId ? '#/set/' + setId : (prevHash && !prevHash.startsWith('#/edit') ? prevHash : (isNew ? '#/songs' : '#/song/' + id));
@@ -1054,7 +1100,8 @@ function viewEdit(id, setId) {
   const ok = parseKey(song.key), curKey = ok ? keyName(ok.pc, ok.minor) : '';
   const opt = (v, l, sel) => `<option value="${esc(v)}"${sel ? ' selected' : ''}>${esc(l)}</option>`;
   const insts = INSTRUMENTS.includes(song.instrument) || !song.instrument ? INSTRUMENTS : [song.instrument, ...INSTRUMENTS];
-  $('#app').innerHTML = `
+  const dup = pre && db.songs.some(s => norm(s.title) === norm(pre.title) && norm(s.artist) === norm(pre.artist));
+  $('#app').innerHTML = `${pre ? `<div class="hint" style="margin-bottom:16px"><b>✓ Cifra trazida do Cifra Club</b><span class="small muted">Confira o nome, o instrumento e o tom, e toque em <b style="display:inline">Salvar</b>.${dup ? ' <b style="display:inline;color:var(--danger)">Você já tem uma música com esse nome.</b>' : ''}</span></div>` : ''}
     <div class="field"><label for="e-title">Nome da música</label><input id="e-title" type="text" maxlength="200" value="${esc(song.title)}" placeholder="Nome do louvor" autocomplete="off"></div>
     <div class="field"><label for="e-artist">Artista / ministério</label><input id="e-artist" type="text" maxlength="200" value="${esc(song.artist)}" placeholder="Opcional" autocomplete="off"></div>
     <div class="grid3">
@@ -1073,7 +1120,7 @@ G               D
   Linha da letra aqui
 Em              C
   Outra linha da letra">${esc(song.text)}</textarea>
-      <p class="help">Dica: no site de cifras, selecione a cifra, copie e cole aqui — do jeito que vem. Os acordes ficam na linha de cima da letra. Marque as partes com [Refrão], [Ponte]…</p>
+      <p class="help">Dica: no site de cifras, selecione a cifra, copie e cole aqui — do jeito que vem. Os acordes ficam na linha de cima da letra. Marque as partes com [Refrão], [Ponte]… Ou use o favorito <a href="#/settings">“Salvar no Minhas Cifras”</a> para trazer do Cifra Club num toque.</p>
     </div>
     <div class="row"><button class="btn" data-act="previewToggle">${ic('music')} Ver como fica</button></div>
     <div id="e-prev" class="card cifra mt" style="padding-bottom:14px" hidden></div>
@@ -1082,7 +1129,7 @@ Em              C
   const initial = snap();
   let capoTouched = false, detT;
   const updDet = () => {
-    const txt = $('#e-text').value, det = $('#e-det');
+    const txt = cleanChars($('#e-text').value), det = $('#e-det');
     const parts = [];
     if (!capoTouched && $('#e-capo').value === '0') { const c = detectCapo(txt); if (c) $('#e-capo').value = c; }
     if (!$('#e-key').value) {
@@ -1098,12 +1145,12 @@ Em              C
   $('#e-capo').addEventListener('change', () => { capoTouched = true; });
   updDet();
   EDIT = {song, isNew, setId, ret, dirty:() => snap() !== initial};
-  if (isNew) setTimeout(() => $('#e-title').focus(), 60);
+  if (isNew && !pre) setTimeout(() => $('#e-title').focus(), 60);
 }
 let EDIT = null;
 function drawPreview() {
   const txt = normalizeText($('#e-text').value);
-  const fake = {key:$('#e-key').value || detectKey(txt), text:txt};
+  const fake = {key:$('#e-key').value || detectKey(cleanChars($('#e-text').value)), text:txt};
   $('#e-prev').innerHTML = txt ? renderCifra(txt, viewCtx(fake, 0, 0), false) : '<p class="muted">Nada para mostrar ainda.</p>';
   $('#e-prev').style.setProperty('--fs', Math.min(db.settings.fontSize, 17) + 'px');
 }
@@ -1111,7 +1158,7 @@ function saveSong() {
   const {song, isNew, setId, ret} = EDIT;
   const title = $('#e-title').value.trim();
   if (!title) { toast('Dê um nome para a música'); $('#e-title').focus(); return; }
-  const raw = $('#e-text').value, text = normalizeText(raw), now = Date.now();
+  const raw = cleanChars($('#e-text').value), text = normalizeText(raw), now = Date.now();
   const key = $('#e-key').value || detectKey(raw);
   const capo = clampInt($('#e-capo').value, 0, 11);
   // cifra escrita em formas com capo: o tom que soa fica como transposição padrão
@@ -1141,7 +1188,26 @@ function viewSettings() {
   else if (installEvt) inst = `<button class="btn primary sm" data-act="install">${ic('phone')} Instalar app</button>`;
   else if (isIOS()) inst = '<p class="small muted" style="margin:0">No Safari: toque em <b>Compartilhar</b> → <b>Adicionar à Tela de Início</b>.</p>';
   else inst = '<p class="small muted" style="margin:0">No Chrome: menu ⋮ → <b>Instalar app</b> (ou “Adicionar à tela inicial”). No computador, use o ícone de instalar na barra de endereço.</p>';
-  $('#app').innerHTML = `
+  const bm = bookmarkletCode();
+  const bmCard = !isHttp() ? '' : `
+    <div class="h2">Trazer cifras do Cifra Club</div>
+    <div class="card bm">
+      <p class="small muted" style="margin:0 0 6px">Com o favorito <b>Salvar no Minhas Cifras</b>, você abre a música no Cifra Club, toca nele e a cifra chega aqui já preenchida: nome, artista, tom e capo. É só conferir e salvar.</p>
+      ${isIOS() ? '<p class="small" style="margin:8px 0">⚠️ No iPhone, a música trazida pelo favorito vai para o Minhas Cifras do Safari, não para o app instalado. No celular, prefira copiar e colar a cifra.</p>' : ''}
+      <b class="small">No computador</b>
+      <ol class="small"><li>Mostre a barra de favoritos: <b>Ctrl + Shift + B</b> (no Mac, <b>⌘ + Shift + B</b>).</li><li>Arraste o botão abaixo até a barra de favoritos.</li><li>Para usar: abra a música no Cifra Club e clique no favorito.</li></ol>
+      <a class="btn primary sm" href="${esc(bm)}" data-act="bmClick" draggable="true" title="Arraste para a barra de favoritos">Salvar no Minhas Cifras</a>
+      <b class="small" style="display:block;margin-top:18px">No celular Android (Chrome)</b>
+      <ol class="small">
+        <li>Toque em <b>Copiar código</b>, aqui embaixo.</li>
+        <li>No menu <b>⋮</b> do Chrome, toque na estrela <b>☆</b> para salvar esta página nos favoritos.</li>
+        <li>Menu <b>⋮</b> → <b>Favoritos</b>. No favorito novo, toque nos <b>três pontinhos</b> → <b>Editar</b>.</li>
+        <li>Mude o nome para <b>cifra</b>. No campo do endereço (URL), apague tudo e cole o código. Salve.</li>
+        <li>Para usar: abra a música no Cifra Club, toque na barra de endereço, digite <b>cifra</b> e toque no favorito que aparece (o com a estrela).</li>
+      </ol>
+      <button class="btn sm" data-act="copyBm">${ic('copy')} Copiar código</button>
+    </div>`;
+  $('#app').innerHTML = `${bmCard}
     <div class="h2">Aparência</div>
     <div class="card">
       <div class="field" style="margin-bottom:12px"><label>Tema</label>${seg('theme', st.theme, [['auto', 'Automático'], ['light', 'Claro'], ['dark', 'Escuro']])}</div>
@@ -1221,6 +1287,15 @@ const ACT = {
   theme:el => { db.settings.theme = el.dataset.v; persist(); applyTheme(); viewSettings(); },
   accid:el => { db.settings.accidentals = el.dataset.v; persist(); viewSettings(); },
   setFs:el => { db.settings.fontSize = clampInt(db.settings.fontSize + +el.dataset.d, 11, 40); persist(); viewSettings(); },
+  bmClick:() => toast('Arraste este botão até a barra de favoritos (não precisa clicar).'),
+  copyBm:async () => {
+    const code = bookmarkletCode();
+    try { await navigator.clipboard.writeText(code); toast('Código copiado! Agora crie o favorito no Chrome.'); }
+    catch (e) {
+      const sh = openSheet(`<h3>Código do favorito</h3><p class="muted small">Copie todo o texto abaixo:</p><textarea class="code" style="min-height:30vh;white-space:pre-wrap;word-break:break-all" readonly>${esc(code)}</textarea><div class="row end mt"><button class="btn primary" data-act="closeSheet">Fechar</button></div>`);
+      const ta = sh.querySelector('textarea'); ta.focus(); ta.select();
+    }
+  },
   exportAll:() => exportAll(),
   importFile:() => $('#imp').click(),
   install:async () => { if (!installEvt) return; installEvt.prompt(); try { await installEvt.userChoice; } catch (e) {} installEvt = null; rerender(); },
@@ -1271,6 +1346,15 @@ addEventListener('hashchange', () => { organizing = false; scrollTo(0, 0); route
 try { if (!localStorage.getItem(STORE_KEY)) persist(); } catch (e) {}
 applyTheme(); updNet(); route();
 if ('serviceWorker' in navigator && isHttp()) {
+  // quando uma versão nova do app é baixada, oferece atualizar (sem interromper quem está editando)
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || $('#upd')) return;
+    const b = document.createElement('button');
+    b.id = 'upd'; b.className = 'btn primary sm'; b.textContent = 'Nova versão do app pronta · Atualizar';
+    b.onclick = () => { if (EDIT && EDIT.dirty()) { toast('Salve a música antes de atualizar.'); return; } location.reload(); };
+    document.body.appendChild(b);
+  });
   addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW', e)));
 }
 </script>
