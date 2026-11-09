@@ -98,7 +98,8 @@ a.item:active,button.item:active{background:var(--surface2)}
 .date span{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:700;letter-spacing:.04em}
 .date b{font-size:22px;font-weight:800}
 .badge{font:750 13px/1 var(--mono);padding:7px 8px;border-radius:8px;background:color-mix(in srgb,var(--chord) 14%,transparent);color:var(--chord);white-space:nowrap;flex:none}
-.ord{display:flex;gap:2px;flex:none}
+.ord{display:flex;gap:0;flex:none;margin-right:-6px}
+.ord .ib.sm{width:34px}
 
 /* ---------- botões ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:650;text-decoration:none;color:var(--text);white-space:nowrap}
@@ -261,6 +262,69 @@ body.hasnav #scrollctl{bottom:calc(82px + env(safe-area-inset-bottom))}
 .pickrow .in{font-size:12px;color:var(--muted);font-weight:650}
 .sheet-foot{position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom));background:var(--surface);padding:12px 0 4px;margin-top:8px}
 
+/* anotações */
+.snotes{display:flex;flex-direction:column;gap:8px;margin:-4px 0 18px}
+.snote{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;font:15px/1.4 var(--sans);color:var(--text);background:var(--surface2);border:0;border-radius:12px;padding:10px 12px}
+.snote .i{width:19px;height:19px;color:var(--muted);margin-top:1px}
+.snote b{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:2px}
+.snote span{white-space:pre-wrap}
+.snote.set{background:color-mix(in srgb,var(--sec) 13%,transparent)}
+.snote.set .i,.snote.set b{color:var(--sec)}
+button.snote{cursor:pointer}
+.inote{display:flex;gap:5px;align-items:flex-start;font-size:13px;color:var(--sec);margin-top:3px;font-weight:600}
+.inote .i{width:14px;height:14px;margin-top:2px}
+.inote span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hchip .i{width:15px;height:15px}
+.hchip.simp{background:color-mix(in srgb,var(--sec) 16%,transparent);color:var(--sec)}
+.cifra .c{cursor:pointer;border-radius:4px}
+@media (hover:hover){.cifra .c:hover{background:color-mix(in srgb,var(--chord) 14%,transparent)}}
+
+/* desenhos de acordes */
+.chd-head h3{margin:4px 0 2px;font-size:24px}
+.chd-head p{margin:0 0 10px}
+.chd-tabs{margin:0 -2px 4px}
+.chd-body{display:flex;flex-direction:column;align-items:center;gap:10px;padding:6px 0 4px}
+.chd-body svg{width:min(240px,70vw);height:auto}
+.chd-body svg.kb{width:min(420px,100%)}
+svg.fd .fl,svg.fd .st{stroke:var(--muted);stroke-width:1.4}
+svg.fd .st{stroke-width:1.2}
+svg.fd .nut{stroke:var(--text);stroke-width:5}
+svg.fd .dot{fill:var(--text)}
+svg.fd .dot.root{fill:var(--chord)}
+svg.fd .open{fill:none;stroke:var(--text);stroke-width:1.8}
+svg.fd .mk{fill:var(--muted);font:600 15px var(--sans)}
+svg.fd .pos{fill:var(--text);font:700 13px var(--sans)}
+svg.fd .nn{fill:var(--muted);font:600 11px var(--sans)}
+svg.kb .wk{fill:#fff;stroke:#9a978f;stroke-width:1}
+svg.kb .bk{fill:#222}
+svg.kb .kd{fill:#2b2a27;stroke:#fff;stroke-width:1.5}
+svg.kb .kd.onb{fill:#f2f1ec;stroke:#222}
+svg.kb .kd.root{fill:#ea580c}
+svg.kb .kd.bass{fill:#6366f1}
+.chd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.chd-grid.wide{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.chd-card{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 6px 4px;color:var(--text)}
+.chd-card b{font-size:16px;color:var(--chord)}
+.chd-card svg{width:100%;height:auto}
+.bassnote{font:800 28px var(--sans);padding:14px 0 10px}
+
+/* metrônomo */
+#metctl{position:fixed;left:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:26;display:flex;align-items:center;gap:8px;background:var(--text);color:var(--bg);border-radius:999px;padding:5px 5px 5px 14px;box-shadow:0 6px 20px rgba(0,0,0,.25);font-weight:750}
+body.hasnav #metctl{bottom:calc(82px + env(safe-area-inset-bottom))}
+#metctl button{width:38px;height:38px;border:0;background:transparent;color:inherit;border-radius:50%;display:grid;place-items:center}
+.mdot{width:14px;height:14px;border-radius:50%;background:color-mix(in srgb,var(--bg) 35%,transparent)}
+.mdot.beat{animation:mbeat .18s ease-out}
+.mdot.beat.acc{animation-name:macc}
+@keyframes mbeat{from{background:var(--bg);transform:scale(1.35)}}
+@keyframes macc{from{background:var(--accent);transform:scale(1.6)}}
+.mbeat{min-width:12px;text-align:center}
+.mbpm{font-size:13px;opacity:.75}
+.met-bpm{display:flex;align-items:center;justify-content:center;gap:22px;margin:4px 0 6px}
+.met-bpm div{text-align:center;line-height:1}
+.met-bpm b{display:block;font-size:46px;font-weight:800;font-variant-numeric:tabular-nums}
+.met-bpm span{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.08em}
+input[type=range]{width:100%;accent-color:var(--accent);margin:8px 0 12px;height:28px}
 #upd{position:fixed;top:calc(64px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:45;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 #toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translate(-50%,16px);opacity:0;background:var(--text);color:var(--bg);padding:11px 16px;border-radius:12px;font-size:14.5px;font-weight:650;transition:.2s;z-index:70;pointer-events:none;max-width:min(92vw,460px);text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
@@ -275,6 +339,7 @@ body.hasnav #scrollctl{bottom:calc(82px + env(safe-area-inset-bottom))}
   <a href="#/settings" data-tab="settings"><svg class="i" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>Ajustes</a>
 </nav>
 <div id="scrollctl" hidden></div>
+<div id="metctl" hidden></div>
 <div id="sheet-root"></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="imp" accept=".json,application/json" hidden>
@@ -282,7 +347,7 @@ body.hasnav #scrollctl{bottom:calc(82px + env(safe-area-inset-bottom))}
 
 <script>
 'use strict';
-const VERSION = '1.2.0';
+const VERSION = '1.3.0';
 
 /* =========================================================
    Utilidades
@@ -322,6 +387,10 @@ const ICONS = {
   link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
   text:'<path d="M4 6h16M4 12h16M4 18h10"/>', cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   phone:'<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>',
+  note:'<path d="M5 3h10l4 4v14H5z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+  metro:'<path d="M7 21h10L14.5 3h-5z"/><path d="M12 16l5.5-9"/><path d="M8.5 15h4"/>',
+  grid:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9.7 3v18M14.3 3v18M5 8h14M5 13h14"/>',
+  spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
 };
 const FILLED = {more:1, play:1};
 const ic = n => `<svg class="i${FILLED[n] ? ' f' : ''}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
@@ -443,9 +512,9 @@ function viewCtx(song, tr, capo) {
   else if (shapes) spell = speller(shapes);
   else { const fl = textPrefersFlats(song.text || ''); spell = pc => (fl ? FLATS : SHARPS)[pc]; }
   const eff = tr - capo;
-  return {semis: (mod12(eff) === 0 && mode === 'auto') ? null : eff, spell, target, shapes};
+  return {semis: (mod12(eff) === 0 && mode === 'auto') ? null : eff, spell, target, shapes, simple: !!db.settings.simplify};
 }
-const chordOut = (tk, ctx) => ctx.semis === null ? tk.core : transposeChord(tk.core, ctx.semis, ctx.spell);
+const chordOut = (tk, ctx) => { const c = ctx.semis === null ? tk.core : transposeChord(tk.core, ctx.semis, ctx.spell); return ctx.simple ? simplifyChord(c) : c; };
 function tokText(tk, ctx) { return tk.kind === 'chord' ? tk.pre + chordOut(tk, ctx) + tk.post : tk.text; }
 function tokHtml(tk, ctx) {
   if (tk.kind === 'chord') return esc(tk.pre) + '<span class="c">' + esc(chordOut(tk, ctx)) + '</span>' + esc(tk.post);
@@ -556,12 +625,211 @@ function normalizeText(t) {
 }
 
 /* =========================================================
+   Formação dos acordes: notas, versão simplificada e desenhos
+   ========================================================= */
+// Lê o sufixo do acorde (m, 7, 7M, 4, 9, °, m7(b5)…) no padrão brasileiro e devolve os intervalos em semitons
+function chordFormula(suf) {
+  const s = String(suf || '').replace(/\s/g, '');
+  const num = n => new RegExp('(^|[^0-9#b])' + n + '(?![0-9])').test(s); // número "solto" (não conta b9, #11…)
+  const f = {third:4, fifth:7, sev:null, ext:[]};
+  if (/^(m(?!aj)|min|-)/.test(s)) f.third = 3;
+  if (/7M|maj|M7|7\+|Δ/.test(s)) f.sev = 11; else if (num(7)) f.sev = 10;
+  if (/b5|5-|\(-5\)/.test(s)) f.fifth = 6;
+  if (/aug|#5|5\+|\+5/.test(s) || /^\+/.test(s)) f.fifth = 8;
+  if (/dim|°|º/.test(s)) { f.third = 3; f.fifth = 6; f.sev = 9; }
+  if (/ø/.test(s)) { f.third = 3; f.fifth = 6; f.sev = 10; }
+  if (/add(4|11)/.test(s)) f.ext.push(5);
+  else if (/sus4|sus(?!2)/.test(s) || num(4)) { f.third = null; f.ext.push(5); }
+  if (/add(2|9)/.test(s)) f.ext.push(2);
+  else if (/sus2/.test(s) || num(2)) { f.third = null; f.ext.push(2); }
+  if (num(6)) f.ext.push(9);
+  if (/b9/.test(s)) f.ext.push(1);
+  if (/#9/.test(s)) f.ext.push(3);
+  if (num(9) && !/add9/.test(s)) f.ext.push(2);
+  if (/#11/.test(s)) f.ext.push(6); else if (num(11) && !/add11/.test(s)) f.ext.push(5);
+  if (/b13/.test(s)) f.ext.push(8); else if (num(13)) f.ext.push(9);
+  if (/^5$/.test(s)) f.third = null;
+  return f;
+}
+// nome da nota a partir da tônica (ex.: em Gm a terça é Bb, não A#)
+function spellFrom(rootName, iv, steps) {
+  const li = LETTERS.indexOf(rootName[0]), pc = mod12(pcOf(rootName[0], rootName[1] || '') + iv), L = (li + steps) % 7;
+  const diff = ((pc - LETTER_PC[L] + 18) % 12) - 6;
+  return diff === 0 ? LETTERS[L] : diff === 1 ? LETTERS[L] + '#' : diff === -1 ? LETTERS[L] + 'b' : SHARPS[pc];
+}
+function chordInfo(name) {
+  const p = parseChord(String(name || '').trim()); if (!p) return null;
+  const rootName = p.l + (p.a === '♯' ? '#' : p.a === '♭' ? 'b' : p.a), root = pcOf(p.l, p.a), f = chordFormula(p.suf);
+  const parts = [[0, 0], [f.third, 2], [f.fifth, 4], [f.sev, 6], ...f.ext.map(e => [e, e <= 3 ? 1 : e <= 6 ? 3 : 5])].filter(x => x[0] !== null);
+  const seen = new Set(), notes = [];
+  for (const [iv, st] of parts.sort((a, b) => a[0] - b[0])) if (!seen.has(iv)) { seen.add(iv); notes.push({iv, name:spellFrom(rootName, iv, st)}); }
+  const ess = new Set([0, f.third, f.sev, ...f.ext].filter(x => x !== null));
+  if (f.fifth !== 7 || f.third === null || notes.length <= 3) ess.add(f.fifth); // acorde de 3 notas: precisa das 3
+  const bass = p.bass ? pcOf(p.bass.l, p.bass.a) : root;
+  return {name, root, rootName, f, notes, bass, bassName:p.bass ? p.bass.l + (p.bass.a || '').replace('♯', '#').replace('♭', 'b') : rootName,
+    tones:new Set(notes.map(n => mod12(root + n.iv))), ess:new Set([...ess].map(i => mod12(root + i)))};
+}
+// cifra simplificada: só o acorde básico (maior, menor ou diminuto), sem baixo e sem extensões
+function simplifyChord(name) {
+  const p = parseChord(name); if (!p) return name;
+  const f = chordFormula(p.suf), root = p.l + p.a;
+  return f.third === 3 && f.fifth === 6 ? root + '°' : f.third === 3 ? root + 'm' : root;
+}
+
+// Instrumentos com braço (cordas da mais grave para a mais aguda, em notas MIDI)
+const FRETTED = {
+  'Violão':     {strings:[40, 45, 50, 55, 59, 64], bass:true, maxMutes:2},
+  'Ukulele':    {strings:[67, 60, 64, 69], bass:false, maxMutes:0},
+  'Cavaquinho': {strings:[62, 67, 71, 74], bass:false, maxMutes:0},
+};
+const DIAGRAM_TABS = ['Violão', 'Ukulele', 'Cavaquinho', 'Teclado', 'Baixo'];
+const diagramFor = inst => inst === 'Ukulele' || inst === 'Cavaquinho' || inst === 'Teclado' || inst === 'Baixo' ? inst : 'Violão';
+// Formas abertas conhecidas no violão (x = corda abafada), para aparecerem primeiro
+const GUITAR_OPEN = ('C:x32010 C7:x32310 C7M:x32000 C9:x32030 C/E:032010 C/G:332010 D:xx0232 D7:xx0212 D7M:xx0222 Dm:xx0231 Dm7:xx0211 ' +
+  'D4:xx0233 D2:xx0230 D/F#:2x0232 D/C:x30232 E:022100 E7:020100 Em:022000 Em7:022030 E4:022200 E7(4):020200 E7M:021100 E/G#:4x2100 ' +
+  'F7M:xx3210 G:320003 G7:320001 G7M:320002 G/B:x20003 G4:330013 A:x02220 A7:x02020 A7M:x02120 Am:x02210 Am7:x02010 A4:x02230 ' +
+  'A2:x02200 A9:x02420 A/C#:x42220 Am/G:3x2210 B7:x21202 Em9:022002 Cadd9:x32033').split(' ');
+const chordKey = info => info.root + '|' + [...info.tones].sort((a, b) => a - b).join(',') + '|' + info.bass;
+let OPEN_INDEX = null;
+function openShapeFor(info) {
+  if (!OPEN_INDEX) {
+    OPEN_INDEX = new Map();
+    for (const e of GUITAR_OPEN) {
+      const i = e.lastIndexOf(':'), ci = chordInfo(e.slice(0, i));
+      if (ci && !OPEN_INDEX.has(chordKey(ci))) OPEN_INDEX.set(chordKey(ci), [...e.slice(i + 1)].map(c => c === 'x' ? -1 : +c));
+    }
+  }
+  return OPEN_INDEX.get(chordKey(info)) || null;
+}
+// Pestanas mais usadas no violão (formato de Mi e de Lá), por tipo de acorde: casas relativas à pestana
+const GUITAR_BARRES = {
+  '0,4,7':    [[0, 2, 2, 1, 0, 0], [-1, 0, 2, 2, 2, 0]],
+  '0,3,7':    [[0, 2, 2, 0, 0, 0], [-1, 0, 2, 2, 1, 0]],
+  '0,4,7,10': [[0, 2, 0, 1, 0, 0], [-1, 0, 2, 0, 2, 0]],
+  '0,3,7,10': [[0, 2, 0, 0, 0, 0], [-1, 0, 2, 0, 1, 0]],
+  '0,4,7,11': [[0, -1, 1, 1, 0, -1], [-1, 0, 2, 1, 2, 0]],
+  '0,5,7':    [[0, 2, 2, 2, 0, 0], [-1, 0, 2, 2, 3, 0]],
+  '0,5,7,10': [[0, 2, 0, 2, 0, 0], [-1, 0, 2, 0, 3, 0]],
+  '0,2,7':    [null, [-1, 0, 2, 2, 0, 0]],
+  '0,3,6,10': [null, [-1, 0, 1, 0, 1, -1]],
+};
+function barreShapesFor(info) {
+  if (info.bass !== info.root) return [];
+  const t = GUITAR_BARRES[info.notes.map(n => n.iv).sort((a, b) => a - b).join(',')]; if (!t) return [];
+  return [[t[0], mod12(info.root - 4)], [t[1], mod12(info.root - 9)]]
+    .filter(([sh, r]) => sh && r > 0).map(([sh, r]) => sh.map(f => f < 0 ? -1 : f + r));
+}
+// Avalia uma posição: precisa ter as notas importantes, o baixo certo (violão), caber em 4 casas e em 4 dedos.
+// bonus > 0: forma conhecida (aberta ou pestana), que aparece na frente
+function rateShape(inst, info, sh, bonus) {
+  const trusted = bonus > 0;
+  const N = sh.length;
+  let mutes = 0, first = -1;
+  for (let i = 0; i < N; i++) { if (sh[i] < 0) { if (first >= 0 && !trusted) return null; mutes++; } else if (first < 0) first = i; }
+  if (first < 0 || (!trusted && mutes > inst.maxMutes)) return null;
+  const fr = sh.filter(f => f > 0), minF = fr.length ? Math.min(...fr) : 0, maxF = fr.length ? Math.max(...fr) : 0;
+  if (!trusted && maxF - minF > 3) return null;
+  const pcs = new Set(); sh.forEach((f, i) => { if (f >= 0) pcs.add((inst.strings[i] + f) % 12); });
+  if (!trusted) {
+    for (const t of info.ess) if (!pcs.has(t)) return null;
+    if (inst.bass && (inst.strings[first] + sh[first]) % 12 !== info.bass) return null;
+  }
+  let fingers = fr.length, barre = null;
+  if (fr.length > 4) { // pestana: um dedo deitado na casa mais baixa
+    const at = []; sh.forEach((f, i) => { if (f === minF) at.push(i); });
+    let ok = at.length >= 2;
+    for (let i = at[0]; ok && i <= at[at.length - 1]; i++) if (sh[i] < minF) ok = false;
+    if (ok) { fingers = 1 + fr.length - at.length; barre = {fret:minF, from:at[0], to:at[at.length - 1]}; }
+  }
+  if (!trusted && fingers > 4) return null;
+  const opens = sh.filter(f => f === 0).length, pos = opens && maxF <= 4 ? 0 : minF; // com cordas soltas perto da pestana = posição aberta
+  let score = pos * 1.4 + fingers + (barre ? 1.5 : 0) + mutes * 0.8 + (maxF - minF) * 0.8 - (N - mutes) * 0.25;
+  if (maxF >= 5) score += opens * 1.6;
+  if (!pcs.has(mod12(info.root + info.f.fifth))) score += 1;
+  return {shape:sh.slice(), score:score - (bonus || 0), barre, minF, maxF};
+}
+const VOICING_CACHE = new Map();
+function voicingsFor(instName, info) {
+  const key = instName + '|' + chordKey(info);
+  if (VOICING_CACHE.has(key)) return VOICING_CACHE.get(key);
+  const inst = FRETTED[instName], N = inst.strings.length, allowed = new Set(info.tones), found = new Map(), cur = new Array(N);
+  allowed.add(info.bass);
+  if (instName === 'Violão') {
+    const o = openShapeFor(info); if (o) found.set(o.join(','), rateShape(inst, info, o, 100));
+    for (const b of barreShapesFor(info)) if (!found.has(b.join(','))) found.set(b.join(','), rateShape(inst, info, b, 8));
+  }
+  for (let base = 1; base <= 12; base++) {
+    const opts = inst.strings.map(open => {
+      const o = inst.maxMutes ? [-1] : [];
+      if (allowed.has(open % 12)) o.push(0);
+      for (let f = base; f < base + 4; f++) if (allowed.has((open + f) % 12)) o.push(f);
+      return o;
+    });
+    const rec = i => {
+      if (i === N) { const k = cur.join(','); if (!found.has(k)) { const r = rateShape(inst, info, cur); if (r) found.set(k, r); } return; }
+      for (const f of opts[i]) { cur[i] = f; rec(i + 1); }
+    };
+    rec(0);
+  }
+  // as melhores, em regiões diferentes do braço
+  const all = [...found.values()].sort((a, b) => a.score - b.score), out = [];
+  for (const v of all) { if (out.length >= 4) break; if (out.every(o => Math.abs(o.minF - v.minF) >= 2 || (o.minF === 0) !== (v.minF === 0))) out.push(v); }
+  VOICING_CACHE.set(key, out);
+  return out;
+}
+// Desenho do braço (SVG)
+function fretSvg(instName, v, info, mini) {
+  const inst = FRETTED[instName], N = inst.strings.length, sh = v.shape;
+  const start = v.maxF <= 4 ? 1 : v.minF, rows = 4, gx = N === 6 ? 24 : 30, gy = 30, L = 30, T = 30;
+  const W = L + gx * (N - 1) + 22, H = T + gy * rows + (mini ? 8 : 26);
+  let s = `<svg class="fd${mini ? ' mini' : ''}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Desenho do acorde ${esc(info.name)}">`;
+  for (let r = 0; r <= rows; r++) s += `<line class="${r === 0 && start === 1 ? 'nut' : 'fl'}" x1="${L}" x2="${L + gx * (N - 1)}" y1="${T + r * gy}" y2="${T + r * gy}"/>`;
+  for (let i = 0; i < N; i++) s += `<line class="st" x1="${L + i * gx}" x2="${L + i * gx}" y1="${T}" y2="${T + rows * gy}"/>`;
+  if (start > 1) s += `<text class="pos" x="${L - 9}" y="${T + gy / 2 + 5}" text-anchor="end">${start}ª</text>`;
+  if (v.barre) s += `<rect class="dot" x="${L + v.barre.from * gx - 10}" y="${T + (v.barre.fret - start + 0.5) * gy - 10}" width="${(v.barre.to - v.barre.from) * gx + 20}" height="20" rx="10"/>`;
+  sh.forEach((f, i) => {
+    const x = L + i * gx;
+    if (f < 0) s += `<text class="mk" x="${x}" y="${T - 10}" text-anchor="middle">×</text>`;
+    else if (f === 0) s += `<circle class="open" cx="${x}" cy="${T - 15}" r="6"/>`;
+    else if (!(v.barre && f === v.barre.fret && i >= v.barre.from && i <= v.barre.to)) {
+      const pc = (inst.strings[i] + f) % 12;
+      s += `<circle class="dot${pc === info.root ? ' root' : ''}" cx="${x}" cy="${T + (f - start + 0.5) * gy}" r="10"/>`;
+    }
+    if (!mini && f >= 0) { const pc = (inst.strings[i] + f) % 12, n = info.notes.find(n => mod12(info.root + n.iv) === pc); s += `<text class="nn" x="${x}" y="${T + rows * gy + 19}" text-anchor="middle">${esc(n ? n.name : SHARPS[pc])}</text>`; }
+  });
+  return s + '</svg>';
+}
+// Teclado: acorde em posição fechada a partir da tônica; o baixo (se for diferente) aparece em outra cor
+function keysSvg(info) {
+  const on = new Map(); info.notes.forEach(n => on.set(info.root + n.iv, n.iv === 0 ? 'root' : 'tone'));
+  const WK = [0, 2, 4, 5, 7, 9, 11], BK = [1, 3, 6, 8, 10], ww = 22, W = ww * 14, H = 96;
+  let s = `<svg class="kb" viewBox="0 0 ${W} ${H + 4}" role="img" aria-label="Teclado com o acorde ${esc(info.name)}">`;
+  const mark = (semi, x, y, black) => { const c = on.get(semi) || (semi === info.bass && info.bass !== info.root ? 'bass' : null); return c ? `<circle class="kd ${c}${black ? ' onb' : ''}" cx="${x}" cy="${y}" r="7"/>` : ''; };
+  let dots = '';
+  for (let o = 0; o < 2; o++) WK.forEach((pc, i) => { const x = (o * 7 + i) * ww; s += `<rect class="wk" x="${x}" y="0" width="${ww}" height="${H}" rx="3"/>`; dots += mark(o * 12 + pc, x + ww / 2, H - 14, false); });
+  for (let o = 0; o < 2; o++) BK.forEach(pc => { const wi = WK.filter(w => w < pc).length, x = (o * 7 + wi) * ww - ww * 0.3; s += `<rect class="bk" x="${x}" y="0" width="${ww * 0.6}" height="${H * 0.6}" rx="2"/>`; dots += mark(o * 12 + pc, x + ww * 0.3, H * 0.6 - 12, true); });
+  return s + dots + '</svg>';
+}
+// Baixo: todas as posições da nota do baixo nas 5 primeiras casas
+function bassSvg(info) {
+  const strings = [28, 33, 38, 43], N = 4, gx = 34, gy = 30, L = 30, T = 30, rows = 5, W = L + gx * 3 + 24, H = T + gy * rows + 26;
+  let s = `<svg class="fd" viewBox="0 0 ${W} ${H}" role="img" aria-label="Nota ${esc(info.bassName)} no baixo">`;
+  for (let r = 0; r <= rows; r++) s += `<line class="${r === 0 ? 'nut' : 'fl'}" x1="${L}" x2="${L + gx * 3}" y1="${T + r * gy}" y2="${T + r * gy}"/>`;
+  strings.forEach((open, i) => {
+    const x = L + i * gx;
+    s += `<line class="st" x1="${x}" x2="${x}" y1="${T}" y2="${T + rows * gy}"/><text class="nn" x="${x}" y="${T + rows * gy + 19}" text-anchor="middle">${'EADG'[i]}</text>`;
+    for (let f = 0; f <= rows; f++) if ((open + f) % 12 === info.bass) s += f === 0 ? `<circle class="dot root" cx="${x}" cy="${T - 15}" r="7"/>` : `<circle class="dot root" cx="${x}" cy="${T + (f - 0.5) * gy}" r="10"/>`;
+  });
+  return s + '</svg>';
+}
+
+/* =========================================================
    Dados (salvos no próprio aparelho)
    ========================================================= */
 const STORE_KEY = 'cifras:data:v1';
 const INSTRUMENTS = ['Violão','Guitarra','Teclado','Baixo','Ukulele','Cavaquinho','Voz','Bateria','Outro'];
 const SPEEDS = [6, 9, 13, 18, 24, 31, 40, 52, 66, 85];
-const DEFAULT_SETTINGS = {theme:'auto', style:'modern', fontSize:17, accidentals:'auto', columns:false, lyricsOnly:false, speed:3, wake:true, hintDismissed:false, lastInstrument:'Violão'};
+const DEFAULT_SETTINGS = {theme:'auto', style:'modern', simplify:false, chordTap:true, pedal:'scroll', pedalNext:true, metSound:true, fontSize:17, accidentals:'auto', columns:false, lyricsOnly:false, speed:3, wake:true, hintDismissed:false, lastInstrument:'Violão'};
 const DEMO = `[Intro] G  D/F#  Em7  C9
 
 [Primeira Parte]
@@ -597,14 +865,17 @@ function cleanSong(x) {
   if (!x || typeof x !== 'object' || !ID_RE.test(x.id)) return null;
   return {id:x.id, title:String(x.title || 'Sem nome').slice(0, 200), artist:String(x.artist || '').slice(0, 200), key:parseKey(x.key) ? String(x.key).trim() : '',
     instrument:String(x.instrument || '').slice(0, 40), capo:clampInt(x.capo, 0, 11), transpose:normTr(clampInt(x.transpose, -11, 11)),
-    text:String(x.text || '').slice(0, 200000), createdAt:+x.createdAt || Date.now(), updatedAt:+x.updatedAt || Date.now()};
+    text:String(x.text || '').slice(0, 200000), note:String(x.note || '').slice(0, 2000),
+    bpm:+x.bpm ? clampInt(x.bpm, 30, 300) : 0, sig:SIGS.includes(x.sig) ? x.sig : '4/4',
+    createdAt:+x.createdAt || Date.now(), updatedAt:+x.updatedAt || Date.now()};
 }
+const SIGS = ['4/4', '3/4', '6/8', '2/4'];
 function cleanSet(x) {
   if (!x || typeof x !== 'object' || !ID_RE.test(x.id)) return null;
   const items = (Array.isArray(x.items) ? x.items : []).filter(it => it && ID_RE.test(it.songId))
-    .map(it => ({songId:it.songId, transpose:normTr(clampInt(it.transpose, -11, 11)), capo:clampInt(it.capo, 0, 11)}));
+    .map(it => ({songId:it.songId, transpose:normTr(clampInt(it.transpose, -11, 11)), capo:clampInt(it.capo, 0, 11), note:String(it.note || '').slice(0, 1000)}));
   const date = /^\d{4}-\d{2}-\d{2}$/.test(x.date) ? x.date : todayStr();
-  return {id:x.id, name:String(x.name || 'Repertório').slice(0, 120), date, items, createdAt:+x.createdAt || Date.now(), updatedAt:+x.updatedAt || Date.now()};
+  return {id:x.id, name:String(x.name || 'Repertório').slice(0, 120), date, note:String(x.note || '').slice(0, 2000), items, createdAt:+x.createdAt || Date.now(), updatedAt:+x.updatedAt || Date.now()};
 }
 function load() {
   try {
@@ -819,7 +1090,7 @@ function route() {
   if (h.startsWith('#import=')) { handleImportLink(h.slice(8)); return; }
   if (h.startsWith('#add=')) { handleAddLink(h.slice(5)); return; }
   prevHash = curHash; curHash = h;
-  stopScroll(); keepAwake(false); closeSheet(true); S = null; EDIT = null;
+  stopScroll(); metStop(); keepAwake(false); closeSheet(true); S = null; EDIT = null;
   document.body.classList.remove('full', 'hasnav');
   $('#bar').classList.remove('song', 'scrolled');
   let m;
@@ -879,13 +1150,29 @@ function setForm(s) {
   const sh = openSheet(`<h3>${isNew ? 'Novo repertório' : 'Editar repertório'}</h3>
     <div class="field"><label for="fs-name">Nome</label><input id="fs-name" type="text" maxlength="120" value="${esc(s ? s.name : 'Culto')}" placeholder="Ex.: Culto de domingo, Ensaio"></div>
     <div class="field"><label for="fs-date">Data</label><input id="fs-date" type="date" value="${esc(s ? s.date : todayStr())}"></div>
+    <div class="field"><label for="fs-note">Observações <span style="font-weight:500">(opcional)</span></label><textarea id="fs-note" rows="2" maxlength="2000" placeholder="Ex.: ensaio às 18h · ministro: João">${esc(s ? s.note || '' : '')}</textarea></div>
     <div class="row end"><button class="btn" data-act="closeSheet">Cancelar</button><button class="btn primary" id="fs-ok">${isNew ? 'Criar' : 'Salvar'}</button></div>`);
   sh.querySelector('#fs-ok').onclick = () => {
-    const name = $('#fs-name').value.trim() || 'Repertório', date = $('#fs-date').value || todayStr(), now = Date.now();
+    const name = $('#fs-name').value.trim() || 'Repertório', date = $('#fs-date').value || todayStr(), note = $('#fs-note').value.trim(), now = Date.now();
     closeSheet(true);
-    if (isNew) { const ns = {id:uid(), name, date, items:[], createdAt:now, updatedAt:now}; db.setlists.push(ns); persist(); location.hash = '#/set/' + ns.id; }
-    else { s.name = name; s.date = date; s.updatedAt = now; persist(); rerender(); }
+    if (isNew) { const ns = {id:uid(), name, date, note, items:[], createdAt:now, updatedAt:now}; db.setlists.push(ns); persist(); location.hash = '#/set/' + ns.id; }
+    else { s.name = name; s.date = date; s.note = note; s.updatedAt = now; persist(); rerender(); }
   };
+}
+// janela simples para escrever uma anotação
+function noteSheet(title, help, value, onSave) {
+  const sh = openSheet(`<h3>${esc(title)}</h3>${help ? `<p class="muted small" style="margin-top:-6px">${esc(help)}</p>` : ''}
+    <textarea id="nt" rows="4" maxlength="1000" placeholder="Ex.: começa só voz · repetir o refrão 2x · ministro: João">${esc(value || '')}</textarea>
+    <div class="row end mt">${value ? '<button class="btn danger" id="nt-del">Apagar</button>' : ''}<button class="btn" data-act="closeSheet">Cancelar</button><button class="btn primary" id="nt-ok">Salvar</button></div>`);
+  sh.querySelector('#nt-ok').onclick = () => { const v = $('#nt').value.trim(); closeSheet(true); onSave(v); };
+  const del = sh.querySelector('#nt-del'); if (del) del.onclick = () => { closeSheet(true); onSave(''); };
+}
+function itemNoteSheet(s, it) {
+  const song = songById(it.songId);
+  noteSheet('Anotação: ' + (song ? song.title : 'música'), `Vale só para “${s.name}”. Aparece em cima da cifra na hora de tocar.`, it.note, v => {
+    it.note = v; s.updatedAt = Date.now(); persist(); toast(v ? 'Anotação salva' : 'Anotação apagada');
+    if (S && S.item === it) drawSong(); else rerender();
+  });
 }
 
 /* =========================================================
@@ -901,17 +1188,20 @@ function viewSet(id) {
   header({back:'#/', title:s.name, sub:(dd === 0 ? 'Hoje · ' : dd === 1 ? 'Amanhã · ' : '') + fmtDate(s.date, true),
     right:`<button class="ib" data-act="shareMenu" data-id="${s.id}" aria-label="Enviar">${ic('share')}</button><button class="ib" data-act="setMenu" data-id="${s.id}" aria-label="Mais opções">${ic('more')}</button>`});
   const n = s.items.length;
-  let h = '';
+  let h = s.note ? `<div class="snote set" style="margin-bottom:12px">${ic('note')}<div><b>Observações</b><span>${esc(s.note)}</span></div></div>` : '';
   if (n) {
     h += `<div class="row"><a class="btn primary grow" href="#/play/${s.id}/0">${ic('play')} Tocar repertório</a><button class="btn" data-act="organize">${organizing ? ic('check') + ' Pronto' : ic('sort') + ' Organizar'}</button></div>`;
+    if (organizing) h += '<p class="help" style="margin:10px 2px 0">Use as setas para mudar a ordem e o bloquinho para escrever uma anotação na música (ex.: “começa só voz”).</p>';
     h += `<div class="list mt">${s.items.map((it, i) => {
       const song = songById(it.songId), k = songKeyLabel(song, it.transpose, it.capo);
       const sub = esc([song.artist, song.instrument].filter(Boolean).join(' · '));
-      if (organizing) return `<div class="item"><span class="num">${i + 1}</span><div class="meta"><div class="t">${esc(song.title)}</div><div class="s">${sub}</div></div><div class="ord">
+      const note = it.note ? `<div class="inote">${ic('note')}<span>${esc(it.note)}</span></div>` : '';
+      if (organizing) return `<div class="item"><span class="num">${i + 1}</span><div class="meta"><div class="t">${esc(song.title)}</div><div class="s">${sub}</div>${note}</div><div class="ord">
+        <button class="ib sm" data-act="itemNote" data-id="${s.id}" data-i="${i}" aria-label="Anotação">${ic('note')}</button>
         <button class="ib sm" data-act="mv" data-id="${s.id}" data-i="${i}" data-d="-1" ${i === 0 ? 'disabled' : ''} aria-label="Subir">${ic('up')}</button>
         <button class="ib sm" data-act="mv" data-id="${s.id}" data-i="${i}" data-d="1" ${i === n - 1 ? 'disabled' : ''} aria-label="Descer">${ic('down')}</button>
         <button class="ib sm danger" data-act="rmItem" data-id="${s.id}" data-i="${i}" aria-label="Tirar do repertório">${ic('x')}</button></div></div>`;
-      return `<a class="item" href="#/play/${s.id}/${i}"><span class="num">${i + 1}</span><div class="meta"><div class="t">${esc(song.title)}</div><div class="s">${sub}</div></div>${k ? `<span class="badge">${esc(k)}</span>` : ''}</a>`;
+      return `<a class="item" href="#/play/${s.id}/${i}"><span class="num">${i + 1}</span><div class="meta"><div class="t">${esc(song.title)}</div><div class="s">${sub}</div>${note}</div>${k ? `<span class="badge">${esc(k)}</span>` : ''}</a>`;
     }).join('')}</div>`;
   } else h += empty('Repertório vazio', 'Adicione as músicas que vão ser tocadas. Você pode escolher das suas músicas ou colar uma cifra nova.');
   h += `<div class="row mt"><button class="btn grow${n ? '' : ' primary'}" data-act="addSongs" data-id="${s.id}">${ic('plus')} Adicionar músicas</button></div>`;
@@ -1000,6 +1290,7 @@ function viewSong(c) {
       <button class="btn primary" data-act="go" data-d="1" ${next ? '' : 'disabled'} aria-label="Próxima música">${ic('next')}</button></nav>`;
   }
   $('#app').innerHTML = `<div id="cifra" class="cifra"></div>${nav}`;
+  $('#cifra').addEventListener('click', e => { const c = e.target.closest('.c'); if (c && db.settings.chordTap !== false) chordSheet(c.textContent); });
   drawSong();
   if (db.settings.wake) keepAwake(true);
 }
@@ -1020,6 +1311,8 @@ function heroHtml(song, ctx, capo) {
   if (ok && ctx.target && !capo && ctx.target.pc !== ok.pc) chips.push(`<button class="hchip" data-act="keySheet">Original em <b>${esc(keyName(ok.pc, ok.minor))}</b></button>`);
   if (capo && ctx.shapes) chips.push(`<button class="hchip" data-act="keySheet">Capo ${capo}ª casa · formas de <b>${esc(ctx.shapes.name)}</b></button>`);
   if (song.instrument) chips.push(`<span class="hchip">${esc(song.instrument)}</span>`);
+  chips.push(`<button class="hchip" data-act="metSheet">${ic('metro')}${song.bpm ? `<b>${song.bpm}</b> BPM · ${esc(song.sig || '4/4')}` : 'Metrônomo'}</button>`);
+  if (db.settings.simplify) chips.push(`<button class="hchip simp" data-act="simplify">Simplificada ✕</button>`);
   return `<header class="song-hero"><h2>${esc(song.title)}</h2>${song.artist ? `<p>${esc(song.artist)}</p>` : ''}${chips.length && !db.settings.lyricsOnly ? `<div class="chips">${chips.join('')}</div>` : ''}</header>`;
 }
 // mostra o nome da música na barra de cima só depois que o cabeçalho sai da tela
@@ -1038,6 +1331,10 @@ function drawSong() {
   el.classList.toggle('lyr-only', !!db.settings.lyricsOnly);
   el.classList.toggle('modern', modernStyle());
   let h = heroHtml(S.song, ctx, capo);
+  const notes = [];
+  if (S.item && S.item.note) notes.push(`<button class="snote set" data-act="editItemNote">${ic('note')}<div><b>Neste repertório</b><span>${esc(S.item.note)}</span></div></button>`);
+  if (S.song.note) notes.push(`<div class="snote">${ic('note')}<div><b>Observação</b><span>${esc(S.song.note)}</span></div></div>`);
+  if (notes.length) h += `<div class="snotes">${notes.join('')}</div>`;
   h += S.song.text.trim() ? `<div class="sheet-body">${renderCifra(S.song.text, ctx, db.settings.lyricsOnly, modernStyle())}</div>`
     : `<div class="empty">${ic('music')}<h3>Cifra vazia</h3><p>Toque no lápis lá em cima para colar a cifra.</p><a class="btn primary" href="#/edit/${S.song.id}">${ic('edit')} Colar cifra</a></div>`;
   el.innerHTML = h;
@@ -1078,9 +1375,63 @@ function keySheet() {
   };
   draw();
 }
+// janela do acorde: desenho no instrumento escolhido, com outras posições
+let chordInstPick = null;
+function chordSheet(name) {
+  const info = chordInfo(name); if (!info) return;
+  let inst = chordInstPick || diagramFor(S && S.song.instrument), alt = 0;
+  const sh = openSheet('');
+  const draw = () => {
+    let body;
+    if (inst === 'Teclado') body = keysSvg(info) + `<p class="small muted center">Tônica em laranja${info.bass !== info.root ? ` · mão esquerda (baixo): <b>${esc(info.bassName)}</b>` : ''}</p>`;
+    else if (inst === 'Baixo') body = bassSvg(info) + `<p class="small muted center">Nota do baixo: <b>${esc(info.bassName)}</b>. Toque em qualquer uma das posições marcadas.</p>`;
+    else {
+      const vs = voicingsFor(inst, info);
+      if (!vs.length) body = '<p class="muted center">Não encontrei uma posição confortável para esse acorde neste instrumento.</p>';
+      else { alt %= vs.length; body = fretSvg(inst, vs[alt], info) + (vs.length > 1 ? `<div class="row" style="justify-content:center"><button class="btn sm" data-alt>Outra posição · ${alt + 1} de ${vs.length}</button></div>` : ''); }
+    }
+    sh.innerHTML = `<div class="chd-head"><h3>${esc(name)}</h3><p class="muted small">Notas: ${info.notes.map(n => esc(n.name)).join(' · ')}${info.bass !== info.root ? ` · baixo ${esc(info.bassName)}` : ''}</p></div>
+      <div class="chips chd-tabs">${DIAGRAM_TABS.map(t => `<button class="chip${t === inst ? ' on' : ''}" data-inst="${t}">${t}</button>`).join('')}</div>
+      <div class="chd-body">${body}</div>
+      <div class="row end mt"><button class="btn primary" data-act="closeSheet">Fechar</button></div>`;
+  };
+  sh.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.inst) { inst = chordInstPick = b.dataset.inst; alt = 0; draw(); } else if (b.hasAttribute('data-alt')) { alt++; draw(); } };
+  draw();
+}
+// todos os acordes da música (no tom e no modo que estão na tela)
+function songChords() {
+  const t = target(), ctx = viewCtx(S.song, t.transpose || 0, t.capo || 0), seen = new Set(), out = [];
+  for (const l of S.song.text.split('\n')) if (classify(l) === 'chord') for (const tk of lineTokens(l)) if (tk.kind === 'chord') { const c = chordOut(tk, ctx); if (!seen.has(c)) { seen.add(c); out.push(c); } }
+  return out;
+}
+function allChordsSheet() {
+  let inst = chordInstPick || diagramFor(S.song.instrument);
+  const sh = openSheet('');
+  const draw = () => {
+    const cards = songChords().map(c => {
+      const info = chordInfo(c); if (!info) return '';
+      let d;
+      if (inst === 'Teclado') d = keysSvg(info);
+      else if (inst === 'Baixo') d = `<div class="bassnote">${esc(info.bassName)}</div>`;
+      else { const v = voicingsFor(inst, info)[0]; d = v ? fretSvg(inst, v, info, true) : '<div class="muted small" style="padding:20px 0">—</div>'; }
+      return `<button class="chd-card" data-ch="${esc(c)}"><b>${esc(c)}</b>${d}</button>`;
+    }).join('');
+    sh.innerHTML = `<h3>Acordes da música</h3>
+      <div class="chips chd-tabs">${DIAGRAM_TABS.map(t => `<button class="chip${t === inst ? ' on' : ''}" data-inst="${t}">${t}</button>`).join('')}</div>
+      <div class="chd-grid${inst === 'Teclado' ? ' wide' : ''}">${cards || '<p class="muted">Esta cifra não tem acordes.</p>'}</div>
+      <p class="help center" style="margin-top:10px">Toque num acorde para ver maior e outras posições.</p>
+      <div class="row end mt"><button class="btn primary" data-act="closeSheet">Fechar</button></div>`;
+  };
+  sh.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.inst) { inst = chordInstPick = b.dataset.inst; draw(); } else if (b.dataset.ch) { closeSheet(true); chordSheet(b.dataset.ch); } };
+  draw();
+}
 function songMenu() {
   const {song, set, item} = S;
   menuSheet(song.title, [
+    {icon:'grid', label:'Ver todos os acordes da música', fn:() => allChordsSheet()},
+    {icon:'spark', label:db.settings.simplify ? 'Voltar aos acordes completos' : 'Cifra simplificada (só acordes básicos)', fn:() => ACT.simplify()},
+    {icon:'metro', label:'Metrônomo' + (song.bpm ? ` (${song.bpm} BPM)` : ''), fn:() => metSheet()},
+    set ? {icon:'note', label:item.note ? 'Editar anotação deste repertório' : 'Anotação para este repertório', fn:() => itemNoteSheet(set, item)} : null,
     {icon:'text', label:'Enviar cifra no tom atual (WhatsApp)', fn:() => {
       const t = target(), ctx = viewCtx(song, t.transpose || 0, t.capo || 0);
       const info = ctx.target ? `Tom: ${ctx.target.name}${t.capo ? ` (capo na ${t.capo}ª casa, formas de ${ctx.shapes.name})` : ''}` : '';
@@ -1130,6 +1481,101 @@ function drawScrollCtl() {
   el.hidden = false;
   el.innerHTML = `<button data-act="spd" data-d="-1" aria-label="Mais devagar">${ic('minus')}</button><span aria-label="Velocidade">${db.settings.speed + 1}</span><button data-act="spd" data-d="1" aria-label="Mais rápido">${ic('plus')}</button><button data-act="scroll" aria-label="Parar rolagem">${ic('pause')}</button>`;
 }
+// ---------- metrônomo (clique pelo alto-falante + bolinha que pisca) ----------
+const MET = {on:false, ac:null, timer:0, next:0, beat:0, count:0, limit:Infinity, bpm:80, beats:4, countIn:false};
+const metNow = () => MET.ac ? MET.ac.currentTime : performance.now() / 1000;
+function metStart(bpm, sig, countIn) {
+  metStop(true);
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!MET.ac && AC) MET.ac = new AC();
+    if (MET.ac && MET.ac.state === 'suspended') MET.ac.resume();
+  } catch (e) { MET.ac = null; }
+  const beats = parseInt(sig) || 4;
+  Object.assign(MET, {on:true, bpm, beats, beat:0, count:0, limit:countIn ? beats : Infinity, countIn:!!countIn});
+  MET.next = metNow() + 0.12;
+  MET.timer = setInterval(metSchedule, 25);
+  drawMetCtl(); metSchedule();
+}
+function metStop(silent) { MET.on = false; clearInterval(MET.timer); MET.timer = 0; if (!silent) drawMetCtl(); }
+function metSchedule() {
+  while (MET.on && MET.next < metNow() + 0.12) {
+    const t = MET.next, b = MET.beat;
+    if (MET.ac && db.settings.metSound !== false) metClick(t, b === 0);
+    setTimeout(() => metFlash(b), Math.max(0, (t - metNow()) * 1000));
+    MET.next += 60 / MET.bpm; MET.beat = (b + 1) % MET.beats; MET.count++;
+    if (MET.count >= MET.limit) { // contagem: um compasso e para
+      const end = Math.max(0, (MET.next - metNow()) * 1000);
+      clearInterval(MET.timer); MET.timer = 0; MET.on = false;
+      setTimeout(() => { if (!MET.on) drawMetCtl(); }, end);
+      break;
+    }
+  }
+}
+function metClick(t, accent) {
+  const ac = MET.ac, o = ac.createOscillator(), g = ac.createGain();
+  o.frequency.value = accent ? 1760 : 1175;
+  o.connect(g); g.connect(ac.destination);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(accent ? 0.8 : 0.45, t + 0.003);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+  o.start(t); o.stop(t + 0.08);
+}
+function metFlash(b) {
+  const el = $('#metctl'); if (!el || el.hidden) return;
+  const d = el.querySelector('.mdot'); d.classList.remove('beat', 'acc'); void d.offsetWidth; d.classList.add('beat'); if (b === 0) d.classList.add('acc');
+  el.querySelector('.mbeat').textContent = b + 1;
+}
+function drawMetCtl() {
+  const el = $('#metctl');
+  if (!MET.on && !MET.timer) { el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = `<span class="mdot"></span><span class="mbeat">·</span><span class="mbpm">${MET.countIn ? 'Contagem' : MET.bpm + ' BPM'}</span><button data-act="metStop" aria-label="Parar metrônomo">${ic('x')}</button>`;
+}
+function metSheet() {
+  const song = S.song;
+  let bpm = song.bpm || 80, sig = song.sig || '4/4', taps = [];
+  const sh = openSheet('');
+  const save = () => { song.bpm = bpm; song.sig = sig; song.updatedAt = Date.now(); persist(); if (MET.on && !MET.countIn) { MET.bpm = bpm; MET.beats = parseInt(sig) || 4; drawMetCtl(); } drawSong(); };
+  const draw = () => {
+    sh.innerHTML = `<h3>Metrônomo</h3>
+      <div class="met-bpm"><button class="ib bordered" data-b="-1" aria-label="Mais devagar">${ic('minus')}</button><div><b>${bpm}</b><span>BPM</span></div><button class="ib bordered" data-b="1" aria-label="Mais rápido">${ic('plus')}</button></div>
+      <input type="range" id="met-r" min="40" max="220" value="${bpm}" aria-label="Andamento em BPM">
+      <button class="btn block" data-tap>Toque aqui no ritmo da música</button>
+      <div class="field mt" style="margin-bottom:6px"><label>Compasso</label><div class="seg">${SIGS.map(x => `<button class="${x === sig ? 'on' : ''}" data-sig="${x}">${x}</button>`).join('')}</div></div>
+      <div class="set-row"><div><b>Som do clique</b><div class="small muted">Desligado, só pisca na tela.${isIOS() ? ' No iPhone, tire do modo silencioso para ouvir.' : ''}</div></div><label class="switch"><input type="checkbox" id="met-snd" ${db.settings.metSound !== false ? 'checked' : ''}><span></span></label></div>
+      <div class="row mt"><button class="btn grow" data-count>Contagem (1 compasso)</button><button class="btn primary grow" data-run>${MET.on && !MET.countIn ? 'Parar' : 'Ligar metrônomo'}</button></div>
+      <p class="help center">O andamento e o compasso ficam salvos nesta música.</p>`;
+  };
+  sh.onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.b) { bpm = clampInt(bpm + +b.dataset.b, 30, 300); save(); draw(); }
+    else if (b.dataset.sig) { sig = b.dataset.sig; save(); draw(); }
+    else if (b.hasAttribute('data-tap')) {
+      const now = performance.now();
+      if (taps.length && now - taps[taps.length - 1] > 2000) taps = [];
+      taps.push(now); if (taps.length > 6) taps.shift();
+      if (taps.length >= 2) { bpm = clampInt(60000 / ((taps[taps.length - 1] - taps[0]) / (taps.length - 1)), 30, 300); save(); }
+      sh.querySelector('.met-bpm b').textContent = bpm; sh.querySelector('#met-r').value = bpm;
+    }
+    else if (b.hasAttribute('data-count')) { save(); closeSheet(true); metStart(bpm, sig, true); }
+    else if (b.hasAttribute('data-run')) { if (MET.on && !MET.countIn) { metStop(); draw(); } else { save(); closeSheet(true); metStart(bpm, sig, false); } }
+  };
+  sh.oninput = e => { if (e.target.id === 'met-r') { bpm = +e.target.value; sh.querySelector('.met-bpm b').textContent = bpm; if (MET.on && !MET.countIn) MET.bpm = bpm; } };
+  sh.onchange = e => { if (e.target.id === 'met-r') save(); if (e.target.id === 'met-snd') { db.settings.metSound = e.target.checked; persist(); } };
+  draw();
+}
+
+// ---------- pedal Bluetooth / teclado: virar a página ou trocar de música ----------
+function pageTurn(dir) {
+  const barBottom = $('#bar').getBoundingClientRect().bottom;
+  const body = $('#cifra .sheet-body') || $('#cifra');
+  const ended = body.getBoundingClientRect().bottom <= innerHeight - 30;
+  if (dir > 0 && ended && S.set && db.settings.pedalNext !== false) { ACT.go({dataset:{d:1}}); return; }
+  if (dir < 0 && scrollY <= 2 && S.set && db.settings.pedalNext !== false && S.idx > 0) { ACT.go({dataset:{d:-1}}); return; }
+  scrollBy({top:dir * Math.max(120, innerHeight - barBottom - 70), behavior:'smooth'});
+}
+
 const hold = () => { holdUntil = performance.now() + 900; };
 addEventListener('touchstart', () => { if (scrolling) holdUntil = Infinity; }, {passive:true});
 addEventListener('touchend', () => { if (scrolling) hold(); }, {passive:true});
@@ -1187,8 +1633,13 @@ Em              C
     </div>
     <div class="row"><button class="btn" data-act="previewToggle">${ic('music')} Ver como fica</button></div>
     <div id="e-prev" class="card cifra mt" style="padding-bottom:14px" hidden></div>
+    <div class="grid2 mt">
+      <div class="field"><label for="e-bpm">BPM <span style="font-weight:500">(andamento)</span></label><input id="e-bpm" type="text" inputmode="numeric" maxlength="3" value="${song.bpm || ''}" placeholder="Ex.: 72" autocomplete="off"></div>
+      <div class="field"><label for="e-sig">Compasso</label><select id="e-sig">${SIGS.map(x => opt(x, x, x === (song.sig || '4/4'))).join('')}</select></div>
+    </div>
+    <div class="field"><label for="e-note">Observações <span style="font-weight:500">(aparecem em cima da cifra)</span></label><textarea id="e-note" rows="2" maxlength="2000" placeholder="Ex.: dedilhado na introdução · usar capo só no ensaio">${esc(song.note || '')}</textarea></div>
     ${isNew ? '' : `<button class="btn danger block mt" data-act="delSong">${ic('trash')} Excluir música</button>`}`;
-  const snap = () => ['e-title', 'e-artist', 'e-inst', 'e-key', 'e-capo', 'e-text'].map(i => $('#' + i).value).join('\u0001');
+  const snap = () => ['e-title', 'e-artist', 'e-inst', 'e-key', 'e-capo', 'e-text', 'e-bpm', 'e-sig', 'e-note'].map(i => $('#' + i).value).join('\u0001');
   const initial = snap();
   let capoTouched = false, detT;
   const updDet = () => {
@@ -1228,7 +1679,9 @@ function saveSong() {
   // cifra escrita em formas com capo: o tom que soa fica como transposição padrão
   const info = !$('#e-key').value && detectKeyInfo(raw);
   if (info && info.shift && capo) song.transpose = info.shift;
-  Object.assign(song, {title, artist:$('#e-artist').value.trim(), instrument:$('#e-inst').value, key, capo, text, updatedAt:now});
+  const bpm = parseInt($('#e-bpm').value, 10);
+  Object.assign(song, {title, artist:$('#e-artist').value.trim(), instrument:$('#e-inst').value, key, capo, text, updatedAt:now,
+    bpm:bpm ? clampInt(bpm, 30, 300) : 0, sig:$('#e-sig').value, note:$('#e-note').value.trim()});
   db.settings.lastInstrument = song.instrument;
   if (isNew) {
     song.createdAt = now; db.songs.push(song);
@@ -1284,10 +1737,20 @@ function viewSettings() {
     <div class="card">
       <div class="field" style="margin-bottom:6px"><label>Escrita dos acidentes</label>${seg('accid', st.accidentals, [['auto', 'Automática'], ['sharp', 'Sempre ♯'], ['flat', 'Sempre ♭']])}</div>
       <p class="help">Automática escolhe sustenido ou bemol de acordo com o tom (ex.: em F aparece Bb; em E aparece A#).</p>
+      <div class="set-row"><div><b>Desenho ao tocar no acorde</b><div class="small muted">Toque num acorde da cifra para ver como montar no violão, ukulele, cavaquinho, teclado ou baixo.</div></div><label class="switch"><input type="checkbox" data-set="chordTap" ${st.chordTap !== false ? 'checked' : ''}><span></span></label></div>
+      <div class="set-row"><div><b>Cifra simplificada</b><div class="small muted">Mostra só acordes básicos (D7M(9) vira D, Bm7(11) vira Bm). Também dá para ligar no menu ⋮ da música.</div></div><label class="switch"><input type="checkbox" data-set="simplify" ${st.simplify ? 'checked' : ''}><span></span></label></div>
     </div>
     <div class="h2">Na hora de tocar</div>
     <div class="card">
       <div class="set-row"><div><b>Manter a tela ligada</b><div class="small muted">A tela não apaga enquanto a cifra está aberta.</div></div><label class="switch"><input type="checkbox" data-act="wake" ${st.wake ? 'checked' : ''}><span></span></label></div>
+    </div>
+    <div class="h2">Pedal Bluetooth ou teclado</div>
+    <div class="card">
+      <p class="small muted" style="margin:0 0 10px">Funciona com pedais de virar página que se conectam como teclado (setas, Page Up/Down, espaço) e com o teclado do computador.</p>
+      <div class="field" style="margin-bottom:6px"><label>O pedal (ou a seta) serve para</label>${seg('pedal', st.pedal === 'song' ? 'song' : 'scroll', [['scroll', 'Rolar a cifra'], ['song', 'Trocar de música']])}</div>
+      ${st.pedal === 'song' ? '<p class="help">Pedal direito: próxima música do repertório. Esquerdo: anterior.</p>'
+        : `<p class="help">Pedal direito: desce uma tela. Esquerdo: sobe.</p>
+      <div class="set-row"><div><b>No fim da cifra, ir para a próxima música</b><div class="small muted">Dentro de um repertório, ao chegar no fim, o próximo toque abre a música seguinte.</div></div><label class="switch"><input type="checkbox" data-set="pedalNext" ${st.pedalNext !== false ? 'checked' : ''}><span></span></label></div>`}
     </div>
     <div class="h2">Usar sem internet</div>
     <div class="card">
@@ -1354,6 +1817,12 @@ const ACT = {
   accid:el => { db.settings.accidentals = el.dataset.v; persist(); viewSettings(); },
   style:el => { db.settings.style = el.dataset.v; persist(); viewSettings(); },
   setFs:el => { db.settings.fontSize = clampInt(db.settings.fontSize + +el.dataset.d, 11, 40); persist(); viewSettings(); },
+  simplify:() => { db.settings.simplify = !db.settings.simplify; persist(); drawSong(); toast(db.settings.simplify ? 'Cifra simplificada: só acordes básicos' : 'Voltou aos acordes completos'); },
+  metSheet:() => metSheet(),
+  metStop:() => metStop(),
+  editItemNote:() => { if (S && S.item) itemNoteSheet(S.set, S.item); },
+  itemNote:el => { const s = setById(el.dataset.id); if (s && s.items[+el.dataset.i]) itemNoteSheet(s, s.items[+el.dataset.i]); },
+  pedal:el => { db.settings.pedal = el.dataset.v; persist(); viewSettings(); },
   bmClick:() => toast('Arraste este botão até a barra de favoritos (não precisa clicar).'),
   copyBm:async () => {
     const code = bookmarkletCode();
@@ -1381,6 +1850,7 @@ document.addEventListener('click', e => {
 document.addEventListener('change', e => {
   const el = e.target;
   if (el.matches('input[type=checkbox][data-act=wake]')) { db.settings.wake = el.checked; persist(); }
+  if (el.matches('input[type=checkbox][data-set]')) { db.settings[el.dataset.set] = el.checked; persist(); }
   if (el.id === 'imp' && el.files && el.files[0]) {
     const f = el.files[0]; el.value = '';
     f.text().then(t => { const r = importData(JSON.parse(t)); toast(`Importado: ${plural(r.added, 'item novo', 'itens novos')}, ${plural(r.updated, 'atualizado', 'atualizados')}`); rerender(); })
@@ -1389,9 +1859,14 @@ document.addEventListener('change', e => {
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('#sheet-root').classList.contains('open')) { closeSheet(); return; }
-  if (e.target.matches('input,textarea,select') || $('#sheet-root').classList.contains('open') || !S || !S.set) return;
-  if (e.key === 'ArrowRight') { ACT.go({dataset:{d:1}}); e.preventDefault(); }
-  else if (e.key === 'ArrowLeft') { ACT.go({dataset:{d:-1}}); e.preventDefault(); }
+  if (e.target.matches('input,textarea,select') || $('#sheet-root').classList.contains('open') || !S) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  // pedais de virar página funcionam como teclado: mandam setas, PageDown/PageUp, espaço ou Enter
+  const fwd = ['PageDown', 'ArrowDown', 'ArrowRight', ' ', 'Enter'].includes(e.key), back = ['PageUp', 'ArrowUp', 'ArrowLeft'].includes(e.key);
+  if (!fwd && !back) return;
+  e.preventDefault();
+  if (db.settings.pedal === 'song' && S.set) ACT.go({dataset:{d:fwd ? 1 : -1}});
+  else pageTurn(fwd ? 1 : -1);
 });
 
 /* =========================================================
